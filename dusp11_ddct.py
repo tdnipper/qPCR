@@ -30,16 +30,16 @@ rep2 = import_file(sys.argv[2])
 rep3 = import_file(sys.argv[3])
 
 # Now drop DUSP11KO samples so we only have WT
-def drop_row(df: pd.DataFrame) -> pd.DataFrame:
-    """Drop a row if it contains DUSP11KO"""
-    str_drop = 'DUSP11KO'
+def drop_row(df: pd.DataFrame, x) -> pd.DataFrame:
+    """Drop a row if it contains a string"""
+    str_drop = str(x)
     mask =df['Sample Name'].str.contains(str_drop)
     df = df.drop(df[mask].index)
     return(df)
 
-rep1 = drop_row(rep1)
-rep2 = drop_row(rep2)
-rep3 = drop_row(rep3)
+rep1 = drop_row(rep1, 'DUSP11KO')
+rep2 = drop_row(rep2, 'DUSP11KO')
+rep3 = drop_row(rep3, 'DUSP11KO')
 
 frames = [rep1, rep2, rep3]
 combo = pd.concat(frames)
