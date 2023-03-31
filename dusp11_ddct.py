@@ -17,6 +17,12 @@ args = parser.parse_args()
 if args.input:
     infile = args.input
 
+if args.control:
+    control = args.control
+
+if args.target:
+    target = args.target
+
 # Define functions to remove _ in names and import/format files
 
 def replace_char(s, target_char, replacement_char):
@@ -63,33 +69,33 @@ print(combo)
 # rep2 = drop_row(rep2, 'DUSP11KO')
 # rep3 = drop_row(rep3, 'DUSP11KO')
 
-frames = [rep1, rep2, rep3]
+# frames = [rep1, rep2, rep3]
 # combo = pd.concat(frames)
 
 # Get T16 and T24 separated into 18s and DUSP11
 
-t16_18s_subset = combo.loc[combo['Sample Name'].str.contains('WT T16') &
-                    combo['Target Name'].str.contains('18S')
-]
-t16_DUSP11_subset = combo.loc[combo['Sample Name'].str.contains('WT T16') &
-                    combo['Target Name'].str.contains('DUSP11')
+t16_control_subset = combo.loc[combo['Sample Name'].str.contains('WT T16') &
+                               combo['Target Name'].str.contains(control)
+                               ]
+t16_target_subset = combo.loc[combo['Sample Name'].str.contains('WT T16') &
+                    combo['Target Name'].str.contains(target)
 ]
 
 # Combine 18s and DUSP11 data, index according to mock or ix, and take delta CT and mean of each
-t16_18s_subset.index = range(len(t16_18s_subset))
-t16_18s_subset = t16_18s_subset.add_suffix('.18s')
-t16_DUSP11_subset.index = range(len(t16_DUSP11_subset))
-t16_DUSP11_subset = t16_DUSP11_subset.add_suffix('.DUSP11')
+t16_control_subset.index = range(len(t16_control_subset))
+t16_control_subset = t16_control_subset.add_suffix(f'.{control}')
+t16_target_subset.index = range(len(t16_target_subset))
+t16_target_subset = t16_target_subset.add_suffix(f'.{target}')
 
-t16 = pd.concat([t16_18s_subset, t16_DUSP11_subset],
+t16 = pd.concat([t16_control_subset, t16_target_subset],
                 axis=1,
                 )
 # Use combined data to get deltaCT and clean up dataframe
-t16['delta'] = t16['CT.DUSP11']-t16['CT.18s']
-t16 = t16.drop(['Target Name.18s', 'CT.18s', 'Sample Name.DUSP11', 'Target Name.DUSP11', 'CT.DUSP11'], axis=1)
+t16['delta'] = t16[f'CT.{target}']-t16[f'CT.{control}']
+t16 = t16.drop([f'Target Name.{control}', f'CT.{control}', f'Sample Name.{target}', f'Target Name.{target}', f'CT.{target}'], axis=1)
 
 # Use Sample Name column as index to group by mock and ix to get mean and std of deltaCT
-t16 = t16.rename(columns={'Sample Name.18s': 'Sample Name'})
+t16 = t16.rename(columns={f'Sample Name.{control}': 'Sample Name'})
 t16.set_index('Sample Name', inplace=True)
 t16['mean'] = t16.groupby(by=['Sample Name'])['delta'].mean()
 t16['sd'] = t16.groupby(by=['Sample Name'])['delta'].std()
