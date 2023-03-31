@@ -57,14 +57,14 @@ def drop_row(df: pd.DataFrame, x) -> pd.DataFrame:
     df = df.drop(df[mask].index)
     return (df)
 
-concat = drop_row(concat, 'DUSP11KO')
-print(concat)
+combo = drop_row(concat, 'DUSP11KO')
+print(combo)
 # rep1 = drop_row(rep1, 'DUSP11KO')
 # rep2 = drop_row(rep2, 'DUSP11KO')
 # rep3 = drop_row(rep3, 'DUSP11KO')
 
 frames = [rep1, rep2, rep3]
-combo = pd.concat(frames)
+# combo = pd.concat(frames)
 
 # Get T16 and T24 separated into 18s and DUSP11
 
