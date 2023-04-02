@@ -64,7 +64,6 @@ def drop_row(df: pd.DataFrame, x) -> pd.DataFrame:
     return (df)
 
 combo = drop_row(concat, 'DUSP11KO')
-print(combo)
 # rep1 = drop_row(rep1, 'DUSP11KO')
 # rep2 = drop_row(rep2, 'DUSP11KO')
 # rep3 = drop_row(rep3, 'DUSP11KO')
@@ -97,22 +96,20 @@ t16 = t16.drop([f'Target Name.{control}', f'CT.{control}', f'Sample Name.{target
 # Use Sample Name column as index to group by mock and ix to get mean and std of deltaCT
 t16 = t16.rename(columns={f'Sample Name.{control}': 'Sample Name'})
 t16.set_index('Sample Name', inplace=True)
-t16['mean'] = t16.groupby(by=['Sample Name'])['delta'].mean()
-t16['sd'] = t16.groupby(by=['Sample Name'])['delta'].std()
+# t16['mean'] = t16.groupby(by=['Sample Name'])['delta'].mean()
+# t16['sd'] = t16.groupby(by=['Sample Name'])['delta'].std()
 t16.reset_index(inplace=True)
 
 # Separate out mock and ix, then subtract ix-mock to get deltadeltaCT
 t16_mock = t16.loc[t16['Sample Name'] == 'WT T16 mock']\
-    .drop(['delta'], axis=1)\
-    .drop_duplicates()\
     .add_suffix('.mock')\
     .reset_index()
 t16_ix = t16.loc[t16['Sample Name'] == 'WT T16 ix']\
-    .drop(['delta'], axis=1)\
-    .drop_duplicates()\
     .add_suffix('.ix')\
     .reset_index()
 t16_final = pd.concat([t16_mock, t16_ix], axis=1)
-t16_final['ddCT'] = t16_final['mean.mock']-t16_final['mean.ix']
+t16_final['ddCT'] = t16_final['delta.mock']-t16_final['delta.ix']
 t16_final['foldchange'] = np.power(2, t16_final['ddCT'])
+t16_final['foldchange.mean'] = t16_final['foldchange'].mean()
+t16_final['foldchange.std'] = t16_final['foldchange'].std()
 print(t16_final)
