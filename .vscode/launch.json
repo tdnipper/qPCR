@@ -2,18 +2,22 @@
     "version": "0.1.0",
     "configurations": [
         {
-         "name": "DUSP11 ddct counts",
+            "name": "DUSP11 ddct counts",
             "type": "python",
             "request": "launch",
             "program": "dusp11_ddct.py",
-            "console": "integratedTerminal",
+            "console": "internalConsole",
             "args": [
-                "-i", "TN019_9.xls",
-                "-i", "TN019_15.xls",
-                "-i", "TN019_18.xls",
-                "-c", "RNA18S1",
-                "-t", "DUSP11"
-            ]
+                "-i",
+                "TN019_9.xls",
+                "TN019_15.xls",
+                "TN019_18.xls",
+                "-c",
+                "RNA18S1",
+                "-t",
+                "DUSP11"
+            ],
+            "redirectOutput": true
         }
     ]
 }
