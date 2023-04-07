@@ -141,17 +141,8 @@ t16_final["foldchange.std"] = t16_final["foldchange"].std()
 
 #Save final table to an excel file
 t16_final.drop('index', axis=1).to_excel('ddCT_table.xlsx')
-t16_graph = t16_final.drop(
-    [
-    'index',
-    'delta.mock',
-    'delta.ix',
-    'Sample Name.ix',
-    'ddCT',
-    ], 
-    axis=1)
-print(t16_graph)
+
 
 #graph results
-plot=sns.barplot(data=t16_graph, x='Sample Name.mock', y='foldchange', errorbar='sd')
+plot=sns.barplot(data=t16_final, x='Sample Name.mock', y='foldchange', errorbar='sd')
 plt.show(plot)
