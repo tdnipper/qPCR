@@ -2,6 +2,24 @@
     "version": "0.1.0",
     "configurations": [
         {
+            "name": "ddCT_graph",
+            "type": "python",
+            "request": "launch",
+            "program": "ddCT_graph.py",
+            "console": "internalConsole",
+            "redirectOutput": true,
+            "args": [
+                "-i",
+                "data_final.xlsx",
+                "-y",
+                "foldchange",
+                "-n",
+                "Sample Name",
+                "-o",
+                "ddCT.png"
+            ]
+        },
+        {
             "name": "DUSP11 ddct counts",
             "type": "python",
             "request": "launch",
