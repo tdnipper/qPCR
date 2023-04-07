@@ -64,9 +64,7 @@ files = []
 for file in infile:
     file_in = import_file(file)
     files.append(file_in)
-# rep1 = import_file(sys.argv[1])
-# rep2 = import_file(sys.argv[2])
-# rep3 = import_file(sys.argv[3])
+
 concat = pd.concat(files, ignore_index=True)
 
 
@@ -80,37 +78,23 @@ def drop_row(df: pd.DataFrame, x) -> pd.DataFrame:
 
 
 combo = drop_row(concat, "DUSP11KO")
-# rep1 = drop_row(rep1, 'DUSP11KO')
-# rep2 = drop_row(rep2, 'DUSP11KO')
-# rep3 = drop_row(rep3, 'DUSP11KO')
 
-# frames = [rep1, rep2, rep3]
-# combo = pd.concat(frames)
-
-# Get T16 and T24 separated into 18s and DUSP11
-
-t16_control_subset = combo.loc[
-    combo["Sample Name"].str.contains("WT T16")
-    & combo["Target Name"].str.contains(control)
-]
-t16_target_subset = combo.loc[
-    combo["Sample Name"].str.contains("WT T16")
-    & combo["Target Name"].str.contains(target)
-]
+control_subset = combo.loc[combo["Target Name"].str.contains(control)]
+target_subset = combo.loc[combo["Target Name"].str.contains(target)]
 
 # Combine 18s and DUSP11 data, index according to mock or ix, and take delta CT and mean of each
-t16_control_subset.index = range(len(t16_control_subset))
-t16_control_subset = t16_control_subset.add_suffix(f".{control}")
-t16_target_subset.index = range(len(t16_target_subset))
-t16_target_subset = t16_target_subset.add_suffix(f".{target}")
+control_subset.index = range(len(control_subset))
+control_subset = control_subset.add_suffix(f".{control}")
+target_subset.index = range(len(target_subset))
+target_subset = target_subset.add_suffix(f".{target}")
 
-t16 = pd.concat(
-    [t16_control_subset, t16_target_subset],
+data = pd.concat(
+    [control_subset, target_subset],
     axis=1,
 )
 # Use combined data to get deltaCT and clean up dataframe
-t16["delta"] = t16[f"CT.{target}"] - t16[f"CT.{control}"]
-t16 = t16.drop(
+data["delta"] = data[f"CT.{target}"] - data[f"CT.{control}"]
+data = data.drop(
     [
         f"Target Name.{control}",
         f"CT.{control}",
@@ -122,27 +106,33 @@ t16 = t16.drop(
 )
 
 # Use Sample Name column as index to group by mock and ix to get mean and std of deltaCT
-t16 = t16.rename(columns={f"Sample Name.{control}": "Sample Name"})
-t16.set_index("Sample Name", inplace=True)
-# t16['mean'] = t16.groupby(by=['Sample Name'])['delta'].mean()
-# t16['sd'] = t16.groupby(by=['Sample Name'])['delta'].std()
-t16.reset_index(inplace=True)
+data = data.rename(columns={f"Sample Name.{control}": "Sample Name"})
+data.set_index("Sample Name", inplace=True)
+data.reset_index(inplace=True)
 
 # Separate out mock and ix, then subtract ix-mock to get deltadeltaCT
-t16_mock = (
-    t16.loc[t16["Sample Name"] == "WT T16 mock"].add_suffix(".mock").reset_index()
+data_mock = (
+    data.loc[data["Sample Name"].str.contains("mock")].add_suffix(".mock").reset_index()
 )
-t16_ix = t16.loc[t16["Sample Name"] == "WT T16 ix"].add_suffix(".ix").reset_index()
-t16_final = pd.concat([t16_mock, t16_ix], axis=1)
-t16_final["ddCT"] = t16_final["delta.mock"] - t16_final["delta.ix"]
-t16_final["foldchange"] = np.power(2, t16_final["ddCT"])
-t16_final["foldchange.mean"] = t16_final["foldchange"].mean()
-t16_final["foldchange.std"] = t16_final["foldchange"].std() 
 
-#Save final table to an excel file
-t16_final.drop('index', axis=1).to_excel('ddCT_table.xlsx')
+data_ix = (
+    data.loc[data["Sample Name"].str.contains("ix")].add_suffix(".ix").reset_index()
+)
+data_final = pd.concat([data_mock, data_ix], axis=1).drop(
+    ["Sample Name.ix", "index"], axis=1
+)
+data_final = data_final.rename(
+    columns={"Sample Name.mock": "Sample Name"}
+).reset_index()
+data_final["Sample Name"] = data_final["Sample Name"].apply(
+    lambda x: replace_char(x, target_char=" mock", replacement_char="")
+)
+# data_final['Sample Name'] = data_final['Sample Name'].astype(int)
+data_final["ddCT"] = data_final["delta.mock"] - data_final["delta.ix"]
+data_final["foldchange"] = np.power(2, data_final["ddCT"])
+data_final["mean"] = data_final.groupby("Sample Name")["foldchange"].transform("mean")
+data_final["std"] = data_final.groupby("Sample Name")["foldchange"].transform("std")
 
-
-#graph results
-plot=sns.barplot(data=t16_final, x='Sample Name.mock', y='foldchange', errorbar='sd')
-plt.show(plot)
+# Save final table to an excel file
+data_final.to_excel("ddCT_table.xlsx")
+data_final.to_excel("data_final.xlsx")
