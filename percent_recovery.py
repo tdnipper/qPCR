@@ -15,22 +15,23 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-
-if args.input:
-    infile = args.input
-
-if args.key:
-    key = args.key
+infile = args.input
+key = args.key
 
 # def import_key(filename) -> pd.DataFrame:
 #     pd.read_excel(filename)
+
+# Get the keyfile provided and specify the column that names are in
 keyfile = pd.read_excel(key)
 keycol_name = keyfile.columns[1]
+
+# Create a list of genes as a dictionary from the keyfile provided by the user
 gene_dict = {}
 for i, val in enumerate(keyfile[keycol_name]):
     gene_dict[f"var{i}"] = val
 
 
+# Import files for subsequent analysis
 def import_file(filename) -> pd.DataFrame:
     df = pd.read_excel(filename)
 
