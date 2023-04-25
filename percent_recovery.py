@@ -18,9 +18,6 @@ args = parser.parse_args()
 infile = args.input
 key = args.key
 
-# def import_key(filename) -> pd.DataFrame:
-#     pd.read_excel(filename)
-
 # Get the keyfile provided and specify the column that names are in
 keyfile = pd.read_excel(key)
 keycol_name = keyfile.columns[1]
