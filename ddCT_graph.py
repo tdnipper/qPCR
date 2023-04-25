@@ -40,4 +40,4 @@ infile = pd.read_excel(infile)
 
 sns.set(style="ticks")
 plot = sns.barplot(data=infile, x=name, y=mean, errorbar="sd", palette="Paired")
-plt.savefig(outfile, dpi=300)
+plt.savefig(outfile, dpi=300, format="png")
