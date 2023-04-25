@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description="Take ddCT file and graph means and
 # Define and use input argments for file, mean, std columns. Set defaults for columns if no input
 parser.add_argument("-i", "--input", type=str, help="Name of input file")
 parser.add_argument("-y", "--yaxis", type=str, help="Name of column with y values")
-parser.add_argument("-s", "--stdev", type=str, help="Name of column with stdev")
+# parser.add_argument("-s", "--stdev", type=str, help="Name of column with stdev")
 parser.add_argument("-n", "--samplename", type=str, help="Name of Sample Name column")
 parser.add_argument("-o", "--outfile", type=str, help="Destination file to save")
 
