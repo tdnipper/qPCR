@@ -1,6 +1,21 @@
 {
     "version": "0.1.0",
     "configurations": [
+
+        {
+            "name": "percent_recovery",
+            "type": "python",
+            "request": "launch",
+            "program": "percent_recovery.py",
+            "console": "internalConsole",
+            "redirectOutput": true,
+            "args": [
+                "-i",
+                "/TN022/TN022_1_input.xls",
+                "-e",
+                "/TN022/TN022_1_enrich.xls"
+            ]
+        },
         {
             "name": "ddCT_graph",
             "type": "python",
