@@ -7,13 +7,15 @@
             "type": "python",
             "request": "launch",
             "program": "percent_recovery.py",
-            "console": "internalConsole",
+            "console": "integratedTerminal",
             "redirectOutput": true,
             "args": [
                 "-i",
-                "/TN022/TN022_1_input.xls",
+                "TN022_1_input.xls",
                 "-e",
-                "/TN022/TN022_1_enrich.xls"
+                "TN022_1_enriched.xls",
+                "-o",
+                "TN022.1"
             ]
         },
         {
