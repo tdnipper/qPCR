@@ -13,7 +13,7 @@ parser.add_argument(
     "-k",
     "--key",
     type=str,
-    help="Key file with names of transcripts to be analyzed in a column",
+    help="Key file with names of transcripts to be analyzed in a column- Does not work",
 )
 
 parser.add_argument(
@@ -84,7 +84,7 @@ ct_recover["Name"] = ct_recover["Sample Name"].str.cat(
 ct_recover["percent_recovery"] = 100 * 2 ** ct_recover["CT_diff"]
 print(ct_recover)
 # Save final table to excel
-ct_recover.to_excel(f"{outfile}.xlsx")
+ct_recover.to_excel(f"{outfile}_output.xlsx")
 
 # Create a barplot and format with all data
 # Subsetting data into individual plots can be done with a new script
@@ -95,4 +95,4 @@ plot = sns.barplot(
 plt.xticks(rotation=45)
 plt.subplots_adjust(bottom=0.2)
 # plt.show(plot)
-plt.savefig(f"{outfile}.png", dpi=300)
+plt.savefig(f"{outfile}_output.png", dpi=300)
