@@ -1,6 +1,7 @@
 import argparse
 import pandas as pd
-import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 parser = argparse.ArgumentParser(
     description="Analyse % recovery from cappable seq files"
@@ -77,7 +78,21 @@ ct_recover = pd.DataFrame(
         "CT_diff": concat_input["CT"].sub(concat_enrich["CT"]),
     }
 )
+ct_recover["Name"] = ct_recover["Sample Name"].str.cat(
+    ct_recover["Target Name"], sep=" "
+)
 ct_recover["percent_recovery"] = 100 * 2 ** ct_recover["CT_diff"]
 print(ct_recover)
 # Save final table to excel
-ct_recover.to_excel(f'{outfile}.xlsx')
+ct_recover.to_excel(f"{outfile}.xlsx")
+
+# Create a barplot and format with all data
+# Subsetting data into individual plots can be done with a new script
+# using the output file created above
+plot = sns.barplot(
+    data=ct_recover, x="Name", y="percent_recovery", errorbar="sd", palette="Blues"
+)
+plt.xticks(rotation=45)
+plt.subplots_adjust(bottom=0.2)
+# plt.show(plot)
+plt.savefig(f"{outfile}.png", dpi=300)
