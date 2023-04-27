@@ -27,7 +27,7 @@ g = sns.catplot(
     col="Sample Name",
     col_wrap=2,
     height=4,
-    aspect=1.2,
+    aspect=1,
     palette="muted",
 )
 
