@@ -30,18 +30,6 @@ infile = args.input
 efile = args.enrich
 outfile = args.outfile
 
-if args.key:
-    key = args.key
-
-# Get the keyfile provided and specify the column that names are in
-# keyfile = pd.read_excel(key)
-# keycol_name = keyfile.columns[1]
-
-# # Create a list of genes as a dictionary from the keyfile provided by the user
-# gene_dict = {}
-# for i, val in enumerate(keyfile[keycol_name]):
-#     gene_dict[f"var{i}"] = val
-
 
 # Import files for subsequent analysis
 def import_file(filename) -> pd.DataFrame:
@@ -94,5 +82,4 @@ plot = sns.barplot(
 )
 plt.xticks(rotation=45)
 plt.subplots_adjust(bottom=0.2)
-# plt.show(plot)
 plt.savefig(f"{outfile}_output.png", dpi=300)

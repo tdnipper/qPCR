@@ -11,9 +11,9 @@
             "redirectOutput": true,
             "args": [
                 "-i",
-                "/TN019/cappable_seq/TN019_11_qPCR_input.xlsx",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_11_qPCR1_input.xls",
                 "-e",
-                "/TN019/cappable_seq/TN019_11_qPCR_enriched.xlsx",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_11_qPCR1_enriched.xlsx",
                 "-o",
                 "TN022.1"
             ]
