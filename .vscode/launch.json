@@ -12,10 +12,14 @@
             "args": [
                 "-i",
                 "${workspaceFolder}/TN019/cappable_seq/TN019_11_qPCR1_input.xls",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_input.xls",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_enriched.xls",
                 "-e",
-                "${workspaceFolder}/TN019/cappable_seq/TN019_11_qPCR1_enriched.xlsx",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_11_enriched.xlsx",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_enriched.xls",
+                "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_enriched.xls",
                 "-o",
-                "TN022.1"
+                "cappable_seq_test"
             ]
         },
         {
@@ -40,13 +44,13 @@
             "name": "DUSP11 ddct counts",
             "type": "python",
             "request": "launch",
-            "program": "dusp11_ddct.py",
-            "console": "internalConsole",
+            "program": "${workspaceFolder}/TN019/DUSP11_ddCT/dusp11_ddct.py",
+            "console": "integratedTerminal",
             "args": [
                 "-i",
-                "TN019_9.xls",
-                "TN019_15.xls",
-                "TN019_18.xls",
+                "${workspaceFolder}/TN019/DUSP11_ddCT/TN019_9.xls",
+                "${workspaceFolder}/TN019/DUSP11_ddCT/TN019_15_DUSP11_2.xls",
+                "${workspaceFolder}/TN019/DUSP11_ddCT/TN019_18_DUSP11_3.xls",
                 "-c",
                 "RNA18S1",
                 "-t",

@@ -70,7 +70,6 @@ ct_recover["Name"] = ct_recover["Sample Name"].str.cat(
     ct_recover["Target Name"], sep=" "
 )
 ct_recover["percent_recovery"] = 100 * 2 ** ct_recover["CT_diff"]
-print(ct_recover)
 # Save final table to excel
 ct_recover.to_excel(f"{outfile}_output.xlsx")
 

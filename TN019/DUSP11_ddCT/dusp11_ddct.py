@@ -103,13 +103,12 @@ data = data.drop(
     ],
     axis=1,
 )
-
 # Use Sample Name column as index to group by mock and ix to get mean and std of deltaCT
 data = data.rename(columns={f"Sample Name.{control}": "Sample Name"})
 data.set_index("Sample Name", inplace=True)
 data.reset_index(inplace=True)
 
-# Separate out mock and ix, then subtract ix-mock to get deltadeltaCT
+# Separate out mock and ix
 data_mock = (
     data.loc[data["Sample Name"].str.contains("mock")].add_suffix(".mock").reset_index()
 )
@@ -120,18 +119,30 @@ data_ix = (
 data_final = pd.concat([data_mock, data_ix], axis=1).drop(
     ["Sample Name.ix", "index"], axis=1
 )
+# Get control mean (delta.mock.mean) by taking mean of delta.mock
+data_final["delta.mock.mean"] = data_final.groupby("Sample Name.mock")[
+    "delta.mock"
+].transform("mean")
 data_final = data_final.rename(
     columns={"Sample Name.mock": "Sample Name"}
 ).reset_index()
 data_final["Sample Name"] = data_final["Sample Name"].apply(
     lambda x: replace_char(x, target_char=" mock", replacement_char="")
 )
-# data_final['Sample Name'] = data_final['Sample Name'].astype(int)
-data_final["ddCT"] = data_final["delta.mock"] - data_final["delta.ix"]
-data_final["foldchange"] = np.power(2, data_final["ddCT"])
-data_final["mean"] = data_final.groupby("Sample Name")["foldchange"].transform("mean")
-data_final["std"] = data_final.groupby("Sample Name")["foldchange"].transform("std")
+# Get ddCT for control and target by subtracting delta.ix from delta.mock.mean
+data_final[f"ddCT {control}"] = data_final["delta.mock"] - data_final["delta.mock.mean"]
+data_final[f"ddCT {target}"] = data_final["delta.ix"] - data_final["delta.mock.mean"]
+data_final[f"foldchange {control}"] = np.power(2, -(data_final[f"ddCT {control}"]))
+data_final[f"foldchange {target}"] = np.power(2, -(data_final[f"ddCT {target}"]))
+
+# grouped_df = data_final.groupby('Sample Name')[['foldchange RNA18S1', 'foldchange DUSP11']].mean().reset_index()
+melted_df = pd.melt(
+    data_final,
+    id_vars=["Sample Name"],
+    value_vars=["foldchange RNA18S1", "foldchange DUSP11"],
+    var_name="foldchange",
+)
+
 
 # Save final table to an excel file
-data_final.to_excel("ddCT_table.xlsx")
-data_final.to_excel("data_final.xlsx")
+melted_df.to_excel(f"ddCT_{target}_table.xlsx")
