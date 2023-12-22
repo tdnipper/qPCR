@@ -78,9 +78,24 @@ recover_2["Sample Name"] = enrich_data2["Sample Name"]
 recover_2["Target Name"] = enrich_data2["Target Name"]
 recover_2["CT.difference"] = input_data["CT"].sub(enrich_data2["CT"])
 recover_2["percent_recovery"] = 100 * 2 ** recover_2["CT.difference"]
-recovery = pd.concat([recover_1, recover_2])
 
-recovery.to_excel("TN037.3_output.xlsx")
+# Add flowthrough data to dataframe for separate graph
+flowthrough1 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
+flowthrough1["Sample Name"] = flowthrough1_data["Sample Name"]
+flowthrough1["Target Name"] = flowthrough1_data["Target Name"]
+flowthrough1["CT.difference"] = flowthrough1_data["CT"].sub(input_data["CT"])
+flowthrough1["percent_recovery"] = 100 * 2 ** flowthrough1["CT.difference"]
+flowthrough2 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
+flowthrough2["Sample Name"] = flowthrough2_data["Sample Name"]
+flowthrough2["Target Name"] = flowthrough2_data["Target Name"]
+flowthrough2["CT.difference"] = flowthrough2_data["CT"].sub(input_data["CT"])
+flowthrough2["percent_recovery"] = 100 * 2 ** flowthrough2["CT.difference"]
+
+recovery = pd.concat([recover_1, recover_2])
+flowthrough = pd.concat([flowthrough1, flowthrough2])
+
+output = pd.concat([recovery, flowthrough])
+output.to_excel("TN037.3_output.xlsx")
 
 # Plot using paried barplot to compare both enrichments
 g = sns.barplot(
@@ -94,3 +109,12 @@ g = sns.barplot(
 plt.legend(title="Enrichment")
 plt.ylabel("Percent recovery relative to unenriched")
 plt.savefig("TN037.3.png", format="png", dpi=300)
+
+f = sns.barplot(
+    data=flowthrough,
+    x="Target Name",
+    y="percent_recovery",
+    hue="Sample Name",
+    palette="Blues",
+    errorbar="sd",
+)
