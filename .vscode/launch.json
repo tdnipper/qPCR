@@ -12,14 +12,14 @@
             "args": [
                 "-i",
                 "${workspaceFolder}/TN019/cappable_seq/TN019_11_qPCR1_input.xls",
-                "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_input.xls",
-                "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_enriched.xls",
+                // "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_input.xls",
+                // "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_input.xls",
                 "-e",
                 "${workspaceFolder}/TN019/cappable_seq/TN019_11_enriched.xlsx",
-                "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_enriched.xls",
-                "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_enriched.xls",
+                // "${workspaceFolder}/TN019/cappable_seq/TN019_17_t16_enriched.xls",
+                // "${workspaceFolder}/TN019/cappable_seq/TN019_20_t16_enriched.xls",
                 "-o",
-                "cappable_seq_test"
+                "cappable_seq_rep1"
             ]
         },
         {

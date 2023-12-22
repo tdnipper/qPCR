@@ -135,7 +135,6 @@ data_final[f"ddCT {target}"] = data_final["delta.ix"] - data_final["delta.mock.m
 data_final[f"foldchange {control}"] = np.power(2, -(data_final[f"ddCT {control}"]))
 data_final[f"foldchange {target}"] = np.power(2, -(data_final[f"ddCT {target}"]))
 
-# grouped_df = data_final.groupby('Sample Name')[['foldchange RNA18S1', 'foldchange DUSP11']].mean().reset_index()
 melted_df = pd.melt(
     data_final,
     id_vars=["Sample Name"],

@@ -30,8 +30,8 @@ def import_file(filename) -> pd.DataFrame:
     """This function will import and format replicate files."""
     df = pd.read_excel(
         filename,
-        sheet_name="Results",
-        skiprows=46,
+        # sheet_name="Results",
+        # skiprows=46,
         usecols=["Sample Name", "Target Name", "CT"],
         na_values="Undetermined",
     )
@@ -51,6 +51,11 @@ for file in efile:
 # Concat input and enrich into dataframes, then subtract enrich from input
 concat_input = pd.concat(files_input, ignore_index=True)
 concat_enrich = pd.concat(files_enrich, ignore_index=True)
+
+# Remove _input and _enrich from original data
+concat_input["Sample Name"] = concat_input["Sample Name"].str.split(" in").str.get(0)
+concat_enrich["Sample Name"] = concat_enrich["Sample Name"].str.split(" en").str.get(0)
+
 ct_recover = pd.DataFrame(
     {
         "Sample Name": concat_input["Sample Name"],
@@ -73,6 +78,6 @@ ct_recover.to_excel(f"{outfile}_output.xlsx")
 plot = sns.barplot(
     data=ct_recover, x="Name", y="percent_recovery", errorbar="sd", palette="Blues"
 )
-plt.xticks(rotation=45)
+plt.xticks(rotation=45, ha="right")
 plt.subplots_adjust(bottom=0.2)
 plt.savefig(f"{outfile}_output.png", dpi=300)
