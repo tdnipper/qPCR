@@ -40,7 +40,9 @@ def sort_rows(df):
         if "input" in sample_name:
             input_data = pd.concat([input_data, row.to_frame().T], ignore_index=True)
         elif "enrich1" in sample_name:
-            enrich_data = pd.concat([enrich_data1, row.to_frame().T], ignore_index=True)
+            enrich_data1 = pd.concat(
+                [enrich_data1, row.to_frame().T], ignore_index=True
+            )
         elif "enrich2" in sample_name:
             enrich_data2 = pd.concat(
                 [enrich_data2, row.to_frame().T], ignore_index=True
@@ -78,7 +80,7 @@ recover_2["CT.difference"] = input_data["CT"].sub(enrich_data2["CT"])
 recover_2["percent_recovery"] = 100 * 2 ** recover_2["CT.difference"]
 recovery = pd.concat([recover_1, recover_2])
 
-recovery.to_excel("TN037.2_output.xlsx")
+recovery.to_excel("TN037.3_output.xlsx")
 
 # Plot using paried barplot to compare both enrichments
 g = sns.barplot(
@@ -91,4 +93,4 @@ g = sns.barplot(
 )
 plt.legend(title="Enrichment")
 plt.ylabel("Percent recovery relative to unenriched")
-plt.savefig("TN037.2.png", format="png", dpi=300)
+plt.savefig("TN037.3.png", format="png", dpi=300)
