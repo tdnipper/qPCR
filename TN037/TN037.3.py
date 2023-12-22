@@ -33,6 +33,8 @@ def sort_rows(df):
     input_data = pd.DataFrame()
     enrich_data1 = pd.DataFrame()
     enrich_data2 = pd.DataFrame()
+    flowthrough1_data = pd.DataFrame()
+    flowthrough2_data = pd.DataFrame()
     for index, row in df.iterrows():
         sample_name = row["Sample Name"]
         if "input" in sample_name:
@@ -43,10 +45,24 @@ def sort_rows(df):
             enrich_data2 = pd.concat(
                 [enrich_data2, row.to_frame().T], ignore_index=True
             )
-    return input_data, enrich_data1, enrich_data2
+        elif "flowthrough1" in sample_name:
+            flowthrough1_data = pd.concat(
+                [flowthrough1_data, row.to_frame().T], ignore_index=True
+            )
+        elif "flowthrough2" in sample_name:
+            flowthrough2_data = pd.concat(
+                [flowthrough2_data, row.to_frame().T], ignore_index=True
+            )
+    return input_data, enrich_data1, enrich_data2, flowthrough1_data, flowthrough2_data
 
 
-input_data, enrich_data1, enrich_data2 = sort_rows(data)
+(
+    input_data,
+    enrich_data1,
+    enrich_data2,
+    flowthrough1_data,
+    flowthrough2_data,
+) = sort_rows(data)
 
 # Calculate difference between input and each enrichment CTs
 # Use this number to calculate percent recovery
