@@ -2,7 +2,10 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
+cwd=os.getcwd()
+os.chdir(cwd)
 
 # Import function to read results and take the mean of technical replicates
 def import_file(filename) -> pd.DataFrame:
