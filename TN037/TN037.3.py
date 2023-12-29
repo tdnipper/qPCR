@@ -37,8 +37,14 @@ def sort_rows(df):
     flowthrough2_data = pd.DataFrame()
     for index, row in df.iterrows():
         sample_name = row["Sample Name"]
-        if "input" in sample_name:
-            input_data = pd.concat([input_data, row.to_frame().T], ignore_index=True)
+        if "input_beads" in sample_name:
+            input_beads_data = pd.concat(
+                [input_beads_data, row.to_frame().T], ignore_index=True
+            )
+        elif "input_no_beads" in sample_name:
+            input_no_beads_data = pd.concat(
+                [input_no_beads_data, row.to_frame().T], ignore_index=True
+            )
         elif "enrich1" in sample_name:
             enrich_data1 = pd.concat(
                 [enrich_data1, row.to_frame().T], ignore_index=True
@@ -47,22 +53,34 @@ def sort_rows(df):
             enrich_data2 = pd.concat(
                 [enrich_data2, row.to_frame().T], ignore_index=True
             )
-        elif "flowthrough1" in sample_name:
-            flowthrough1_data = pd.concat(
-                [flowthrough1_data, row.to_frame().T], ignore_index=True
+        elif "flowthrough1_beads" in sample_name:
+            flowthrough1_beads_data = pd.concat(
+                [flowthrough1_beads_data, row.to_frame().T], ignore_index=True
+            )
+        elif "flowthrough1_no_beads" in sample_name:
+            flowthrough1_no_beads_data = pd.concat(
+                [flowthrough1_no_beads_data, row.to_frame().T], ignore_index=True
             )
         elif "flowthrough2" in sample_name:
             flowthrough2_data = pd.concat(
                 [flowthrough2_data, row.to_frame().T], ignore_index=True
             )
-    return input_data, enrich_data1, enrich_data2, flowthrough1_data, flowthrough2_data
+    return (
+        input_beads_data,
+        enrich_data1,
+        enrich_data2,
+        flowthrough1_beads_data,
+        flowthrough1_no_beads_data,
+        flowthrough2_data,
+    )
 
 
 (
-    input_data,
+    input_beads_data,
     enrich_data1,
     enrich_data2,
-    flowthrough1_data,
+    flowthrough1_beads_data,
+    flowthrough1_no_beads_data,
     flowthrough2_data,
 ) = sort_rows(data)
 
