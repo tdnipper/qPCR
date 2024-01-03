@@ -30,10 +30,12 @@ data = import_file("TN037_3.xlsx")
 
 # Sort rows based on input or enrich or flowthrough into new dataframes
 def sort_rows(df):
-    input_data = pd.DataFrame()
+    input_beads_data = pd.DataFrame()
+    input_no_beads_data = pd.DataFrame()
     enrich_data1 = pd.DataFrame()
     enrich_data2 = pd.DataFrame()
-    flowthrough1_data = pd.DataFrame()
+    flowthrough1_beads_data = pd.DataFrame()
+    flowthrough1_no_beads_data = pd.DataFrame()
     flowthrough2_data = pd.DataFrame()
     for index, row in df.iterrows():
         sample_name = row["Sample Name"]
@@ -67,6 +69,7 @@ def sort_rows(df):
             )
     return (
         input_beads_data,
+        input_no_beads_data,
         enrich_data1,
         enrich_data2,
         flowthrough1_beads_data,
@@ -77,6 +80,7 @@ def sort_rows(df):
 
 (
     input_beads_data,
+    input_no_beads_data,
     enrich_data1,
     enrich_data2,
     flowthrough1_beads_data,
@@ -86,31 +90,50 @@ def sort_rows(df):
 
 # Calculate difference between input and each enrichment CTs
 # Use this number to calculate percent recovery
+# First do percent recovery for each enrichment normalized to input with beads
 recover_1 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
 recover_1["Sample Name"] = enrich_data1["Sample Name"]
 recover_1["Target Name"] = enrich_data1["Target Name"]
-recover_1["CT.difference"] = input_data["CT"].sub(enrich_data1["CT"])
+recover_1["CT.difference"] = input_beads_data["CT"].sub(enrich_data1["CT"])
 recover_1["percent_recovery"] = 100 * 2 ** recover_1["CT.difference"]
 recover_2 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
 recover_2["Sample Name"] = enrich_data2["Sample Name"]
 recover_2["Target Name"] = enrich_data2["Target Name"]
-recover_2["CT.difference"] = input_data["CT"].sub(enrich_data2["CT"])
+recover_2["CT.difference"] = input_beads_data["CT"].sub(enrich_data2["CT"])
 recover_2["percent_recovery"] = 100 * 2 ** recover_2["CT.difference"]
 
 # Add flowthrough data to dataframe for separate graph
-flowthrough1 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
-flowthrough1["Sample Name"] = flowthrough1_data["Sample Name"]
-flowthrough1["Target Name"] = flowthrough1_data["Target Name"]
-flowthrough1["CT.difference"] = flowthrough1_data["CT"].sub(input_data["CT"])
-flowthrough1["percent_recovery"] = 100 * 2 ** flowthrough1["CT.difference"]
+# Calculate recovery for flowthrough normalized to input with beads and no beads control
+flowthrough1_beads = pd.DataFrame(
+    columns=["Sample Name", "Target Name", "CT.difference"]
+)
+flowthrough1_beads["Sample Name"] = flowthrough1_beads_data["Sample Name"]
+flowthrough1_beads["Target Name"] = flowthrough1_beads_data["Target Name"]
+flowthrough1_beads["CT.difference"] = input_beads_data["CT"].sub(
+    flowthrough1_beads_data["CT"]
+)
+flowthrough1_beads["percent_recovery"] = 100 * 2 ** flowthrough1_beads["CT.difference"]
+
+flowthrough1_no_beads = pd.DataFrame(
+    columns=["Sample Name", "Target Name", "CT.difference"]
+)
+flowthrough1_no_beads["Sample Name"] = flowthrough1_no_beads_data["Sample Name"]
+flowthrough1_no_beads["Target Name"] = flowthrough1_no_beads_data["Target Name"]
+flowthrough1_no_beads["CT.difference"] = input_no_beads_data["CT"].sub(
+    flowthrough1_no_beads_data["CT"]
+)
+flowthrough1_no_beads["percent_recovery"] = (
+    100 * 2 ** flowthrough1_no_beads["CT.difference"]
+)
+
 flowthrough2 = pd.DataFrame(columns=["Sample Name", "Target Name", "CT.difference"])
 flowthrough2["Sample Name"] = flowthrough2_data["Sample Name"]
 flowthrough2["Target Name"] = flowthrough2_data["Target Name"]
-flowthrough2["CT.difference"] = flowthrough2_data["CT"].sub(input_data["CT"])
+flowthrough2["CT.difference"] = input_beads_data["CT"].sub(flowthrough2_data["CT"])
 flowthrough2["percent_recovery"] = 100 * 2 ** flowthrough2["CT.difference"]
 
 recovery = pd.concat([recover_1, recover_2])
-flowthrough = pd.concat([flowthrough1, flowthrough2])
+flowthrough = pd.concat([flowthrough1_beads, flowthrough1_no_beads, flowthrough2])
 
 output = pd.concat([recovery, flowthrough])
 output.to_excel("TN037.3_output.xlsx")
@@ -124,9 +147,10 @@ g = sns.barplot(
     palette="Blues",
     errorbar="sd",
 )
-plt.legend(title="Enrichment")
-plt.ylabel("Percent recovery relative to unenriched")
-plt.savefig("TN037.3.png", format="png", dpi=300)
+g.set_title("Enrichment")
+g.set_ylabel("Percent recovery relative to input")
+g.figure.savefig("TN037.3.png", format="png", dpi=300)
+plt.close()
 
 f = sns.barplot(
     data=flowthrough,
@@ -136,3 +160,7 @@ f = sns.barplot(
     palette="Blues",
     errorbar="sd",
 )
+f.set_title("Flowthrough")
+f.set_ylabel("Percent recovery relative to input")
+f.figure.savefig("TN037.3_flowthrough.png", format="png", dpi=300)
+plt.close()
