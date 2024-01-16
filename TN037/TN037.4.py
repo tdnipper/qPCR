@@ -127,8 +127,8 @@ flowthrough_new["percent_recovery_corrected"] = (
     100 * 2 ** flowthrough_new["CT.difference"]
 ) / 5
 
-# recover_old = pd.concat([recover1_old, recover2_old])
-# recover_new = pd.concat([recover1_new, recover2_new])
+recover_old = pd.concat([recover1_old, recover2_old])
+recover_new = pd.concat([recover1_new, recover2_new])
 recover = pd.concat([recover1_old, recover2_old, recover1_new, recover2_new])
 flowthrough = pd.concat([flowthrough_old, flowthrough_new])
 
@@ -136,19 +136,20 @@ output = pd.concat([recover_old, recover_new, flowthrough])
 output.to_excel("TN037.4_output.xlsx")
 
 # Plot using paried barplot to compare both enrichments
-g = sns.barplot(
-    data=recover_old,
-    x="Target Name",
-    y="percent_recovery",
-    hue="Sample Name",
-    palette="Blues",
-    errorbar="sd",
-)
-g.set_title("Enrichment")
-g.set_ylabel("Percent recovery relative to input")
-plt.tight_layout()
-g.figure.savefig("TN037.4_old.png", format="png", dpi=300)
-plt.close()
+
+# g = sns.barplot(
+#     data=recover_old,
+#     x="Target Name",
+#     y="percent_recovery",
+#     hue="Sample Name",
+#     palette="Blues",
+#     errorbar="sd",
+# )
+# g.set_title("Enrichment")
+# g.set_ylabel("Percent recovery relative to input")
+# plt.tight_layout()
+# g.figure.savefig("TN037.4_old.png", format="png", dpi=300)
+# plt.close()
 
 # f = sns.barplot(
 #     data=recover_new,
