@@ -127,8 +127,9 @@ flowthrough_new["percent_recovery_corrected"] = (
     100 * 2 ** flowthrough_new["CT.difference"]
 ) / 5
 
-recover_old = pd.concat([recover1_old, recover2_old])
-recover_new = pd.concat([recover1_new, recover2_new])
+# recover_old = pd.concat([recover1_old, recover2_old])
+# recover_new = pd.concat([recover1_new, recover2_new])
+recover = pd.concat([recover1_old, recover2_old, recover1_new, recover2_new])
 flowthrough = pd.concat([flowthrough_old, flowthrough_new])
 
 output = pd.concat([recover_old, recover_new, flowthrough])
@@ -149,33 +150,33 @@ plt.tight_layout()
 g.figure.savefig("TN037.4_old.png", format="png", dpi=300)
 plt.close()
 
-f = sns.barplot(
-    data=recover_new,
-    x="Target Name",
-    y="percent_recovery",
-    hue="Sample Name",
-    palette="Blues",
-    errorbar="sd",
-)
-f.set_title("Enrichment")
-f.set_ylabel("Percent recovery relative to input")
-plt.tight_layout()
-f.figure.savefig("TN037.4_new.png", format="png", dpi=300)
-plt.close()
+# f = sns.barplot(
+#     data=recover_new,
+#     x="Target Name",
+#     y="percent_recovery",
+#     hue="Sample Name",
+#     palette="Blues",
+#     errorbar="sd",
+# )
+# f.set_title("Enrichment")
+# f.set_ylabel("Percent recovery relative to input")
+# plt.tight_layout()
+# f.figure.savefig("TN037.4_new.png", format="png", dpi=300)
+# plt.close()
 
-h = sns.barplot(
-    data=flowthrough,
-    x="Target Name",
-    y="percent_recovery",
-    hue="Sample Name",
-    palette="Blues",
-    errorbar="sd",
-)
-h.set_title("Flowthrough")
-h.set_ylabel("Percent recovery relative to input")
-plt.tight_layout()
-h.figure.savefig("TN037.4_flowthrough.png", format="png", dpi=300)
-plt.close()
+# h = sns.barplot(
+#     data=flowthrough,
+#     x="Target Name",
+#     y="percent_recovery",
+#     hue="Sample Name",
+#     palette="Blues",
+#     errorbar="sd",
+# )
+# h.set_title("Flowthrough")
+# h.set_ylabel("Percent recovery relative to input")
+# plt.tight_layout()
+# h.figure.savefig("TN037.4_flowthrough.png", format="png", dpi=300)
+# plt.close()
 
 i = sns.barplot(
     data=flowthrough,
@@ -189,4 +190,18 @@ i.set_title("Flowthrough Corrected")
 i.set_ylabel("Percent recovery relative to input")
 plt.tight_layout()
 i.figure.savefig("TN037.4_flowthrough_corrected.png", format="png", dpi=300)
+plt.close()
+
+j = sns.barplot(
+    data=recover,
+    x="Target Name",
+    y="percent_recovery",
+    hue="Sample Name",
+    palette="Paired",
+    errorbar="sd",
+)
+j.set_title("Enrichment")
+j.set_ylabel("Percent recovery relative to input")
+plt.tight_layout()
+j.figure.savefig("TN037.4_combined.png", format="png", dpi=300)
 plt.close()
