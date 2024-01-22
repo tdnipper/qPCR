@@ -61,9 +61,6 @@ def calculate_percent_recovery(input_df, enrich_df):
     percent_recovery["Target Name"] = enrich_df["Target Name"]
     percent_recovery["CT.difference"] = input_df["CT"].sub(enrich_df["CT"])
     percent_recovery["percent_recovery"] = 100 * 2 ** percent_recovery["CT.difference"]
-    percent_recovery["percent_recovery_corrected"] = (
-        percent_recovery["percent_recovery"] / 5
-    )
     return percent_recovery
 
 
@@ -84,7 +81,7 @@ trizol = pd.concat([recover_trizol_old, recover_trizol_new])
 def plot_percent_recovery(df, title):
     sns.set_theme(style="whitegrid")
     sns.set_palette("deep", 8)
-    ax = sns.barplot(x="Target Name", y="percent_recovery_corrected", data=df)
+    ax = sns.barplot(x="Target Name", y="percent_recovery", data=df, hue = "Sample Name")
     ax.set_title(title)
     # ax.set_ylim(0, 100)
     ax.set_xlabel("Target Name")
