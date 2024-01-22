@@ -83,7 +83,7 @@ trizol = pd.concat([recover_trizol_old, recover_trizol_new])
 
 def plot_percent_recovery(df, title):
     sns.set_theme(style="whitegrid")
-    sns.set_palette("husl", 8)
+    sns.set_palette("deep", 8)
     ax = sns.barplot(x="Target Name", y="percent_recovery_corrected", data=df)
     ax.set_title(title)
     # ax.set_ylim(0, 100)
