@@ -28,15 +28,8 @@ def import_file(filename) -> pd.DataFrame:
 data = import_file("TN037_5.xlsx")
 
 
-def sort_rows(df):
-    categories = [
-        "Zymo_input",
-        "Trizol_input",
-        "Zymo_old",
-        "Trizol_old",
-        "Zymo_new",
-        "Trizol_new",
-    ]
+# Sort rows based on input or enrich or flowthrough into new dataframes
+def sort_rows(df, categories):
     dfs = {categories: pd.DataFrame() for categories in categories}
 
     for index, row in df.iterrows():
@@ -49,8 +42,12 @@ def sort_rows(df):
                 break
     return tuple(dfs.values())
 
+samples = list(data["Sample Name"].unique())
 
-Zymo_input, Trizol_input, Zymo_old, Trizol_old, Zymo_new, Trizol_new = sort_rows(data)
+# Get dataframes for each sample to calculate percent recovery
+Zymo_input, Trizol_input, Zymo_old, Trizol_old, Zymo_new, Trizol_new = sort_rows(
+    data, samples
+)
 
 
 def calculate_percent_recovery(input_df, enrich_df):
@@ -64,6 +61,7 @@ def calculate_percent_recovery(input_df, enrich_df):
     return percent_recovery
 
 
+# Calculate percent recovery
 recover_zymo_old = calculate_percent_recovery(Zymo_input, Zymo_old)
 
 recover_trizol_old = calculate_percent_recovery(Trizol_input, Trizol_old)
@@ -78,10 +76,11 @@ zymo = pd.concat([recover_zymo_old, recover_zymo_new])
 trizol = pd.concat([recover_trizol_old, recover_trizol_new])
 
 
+# Plot percent recovery
 def plot_percent_recovery(df, title):
     sns.set_theme(style="whitegrid")
     sns.set_palette("deep", 8)
-    ax = sns.barplot(x="Target Name", y="percent_recovery", data=df, hue = "Sample Name")
+    ax = sns.barplot(x="Target Name", y="percent_recovery", data=df, hue="Sample Name")
     ax.set_title(title)
     # ax.set_ylim(0, 100)
     ax.set_xlabel("Target Name")
