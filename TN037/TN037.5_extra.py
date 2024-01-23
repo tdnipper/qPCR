@@ -25,8 +25,7 @@ def import_file(filename) -> pd.DataFrame:
     return df
 
 
-data = import_file("TN037_5.xlsx")
-
+data = import_file("TN037_5_trizolredo.xlsx")
 
 # Sort rows based on input or enrich or flowthrough into new dataframes
 def sort_rows(df, categories):
@@ -45,10 +44,9 @@ def sort_rows(df, categories):
 samples = list(data["Sample Name"].unique())
 
 # Get dataframes for each sample to calculate percent recovery
-Zymo_input, Trizol_input, Zymo_old, Trizol_old, Zymo_new, Trizol_new = sort_rows(
+Trizol_input, Trizol_old, Trizol_new, EtOH_input, EtOH_added, EtOH_withheld = sort_rows(
     data, samples
 )
-
 
 def calculate_percent_recovery(input_df, enrich_df):
     percent_recovery = pd.DataFrame(
@@ -62,21 +60,15 @@ def calculate_percent_recovery(input_df, enrich_df):
 
 
 # Calculate percent recovery
-recover_zymo_old = calculate_percent_recovery(Zymo_input, Zymo_old)
-
 recover_trizol_old = calculate_percent_recovery(Trizol_input, Trizol_old)
-
-recover_zymo_new = calculate_percent_recovery(Zymo_input, Zymo_new)
-
 recover_trizol_new = calculate_percent_recovery(Trizol_input, Trizol_new)
+recover_etoh_added = calculate_percent_recovery(EtOH_input, EtOH_added)
+recover_etoh_withheld = calculate_percent_recovery(EtOH_input, EtOH_withheld)
 
-input_compare = calculate_percent_recovery(Trizol_input, Zymo_input)
-
-zymo = pd.concat([recover_zymo_old, recover_zymo_new])
 trizol = pd.concat([recover_trizol_old, recover_trizol_new])
-output = pd.concat([zymo, trizol])
-output.to_excel("TN037.5_output.xlsx")
-
+etoh = pd.concat([recover_etoh_added, recover_etoh_withheld])
+output = pd.concat([trizol, etoh])
+output.to_excel("TN037.5_trizolredo_output.xlsx")
 # Plot percent recovery
 def plot_percent_recovery(df, title):
     sns.set_theme(style="whitegrid")
@@ -89,7 +81,5 @@ def plot_percent_recovery(df, title):
     plt.savefig(f"TN037.5 {title}.png", dpi=300)
     plt.close()
 
-
-plot_percent_recovery(zymo, "Zymo Recovery")
-plot_percent_recovery(trizol, "Trizol Recovery")
-plot_percent_recovery(input_compare, "Input Comparison Trizol vs Zymo")
+plot_percent_recovery(trizol, "Trizol redo")
+plot_percent_recovery(etoh, "AMPure XP beads and EtOH")
