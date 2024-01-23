@@ -4,9 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-cwd = os.getcwd()
-os.chdir(cwd)
-
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # Import function to read results and take the mean of technical replicates
 def import_file(filename) -> pd.DataFrame:
