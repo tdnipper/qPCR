@@ -63,6 +63,7 @@ recover_trizol_new = calculate_percent_recovery(Trizol_input, Trizol_new)
 recover_etoh_added = calculate_percent_recovery(EtOH_input, EtOH_added)
 recover_etoh_withheld = calculate_percent_recovery(EtOH_input, EtOH_withheld)
 
+# Concatenate into relevant groups
 trizol = pd.concat([recover_trizol_old, recover_trizol_new])
 etoh = pd.concat([recover_etoh_added, recover_etoh_withheld])
 output = pd.concat([trizol, etoh])
@@ -81,3 +82,4 @@ def plot_percent_recovery(df, title):
 
 plot_percent_recovery(trizol, "Trizol redo")
 plot_percent_recovery(etoh, "AMPure XP beads and EtOH")
+print("Done")

@@ -93,3 +93,4 @@ def plot_percent_recovery(df, title):
 plot_percent_recovery(zymo, "Zymo Recovery")
 plot_percent_recovery(trizol, "Trizol Recovery")
 plot_percent_recovery(input_compare, "Input Comparison Trizol vs Zymo")
+print('Done!')
