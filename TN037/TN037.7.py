@@ -56,7 +56,7 @@ def calculate_percent_recovery(input_df, enrich_df):
     percent_recovery["Sample Name"] = enrich_df["Sample Name"]
     percent_recovery["Target Name"] = enrich_df["Target Name"]
     percent_recovery["CT.difference"] = input_df["CT"].sub(enrich_df["CT"])
-    percent_recovery["percent_recovery"] = 100 * 2 ** percent_recovery["CT.difference"]
+    percent_recovery["percent_recovery"] = 100 * (2 ** percent_recovery["CT.difference"])
     return percent_recovery
 
 
@@ -85,6 +85,13 @@ plot_percent_recovery(output, "Percent Recovery")
 # Normalize flowthrough values to how much the sample was concentrated during AMPure treatment
 # Input and enrich are 1.5x concentrated, flowthrough is 4.5x, so difference is 3x
 
-flowthrough_recovery["percent_recovery"] = flowthrough_recovery["percent_recovery"]/3
-normalized = pd.concat([enrichment_recovery, flowthrough_recovery])
+flowthrough_recovery_normalize = flowthrough_recovery.copy()
+flowthrough_recovery_normalize["percent_recovery"] = flowthrough_recovery_normalize["percent_recovery"]/3
+normalized = pd.concat([enrichment_recovery, flowthrough_recovery_normalize])
 plot_percent_recovery(normalized, "Normalized Percent Recovery")
+
+# Is there an issue with assuming flowthrough and enrichment could both be up to 80% total RNA? 
+# Divide these by 2 to get 40% for each
+normalized_40 = pd.concat([enrichment_recovery, flowthrough_recovery])
+normalized_40["percent_recovery"] = normalized_40["percent_recovery"]/2
+plot_percent_recovery(normalized_40, "Normalized 40% Percent Recovery")
