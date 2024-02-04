@@ -82,6 +82,8 @@ def plot_percent_recovery(df, title):
 plot_percent_recovery(output, "Percent Recovery")
 
 # Do I need to change flowthrough values because of bad assumptions?
+# Normalize flowthrough values to how much the sample was concentrated during AMPure treatment
+# Input and enrich are 1.5x concentrated, flowthrough is 4.5x, so difference is 3x
 
 flowthrough_recovery["percent_recovery"] = flowthrough_recovery["percent_recovery"]/3
 normalized = pd.concat([enrichment_recovery, flowthrough_recovery])
