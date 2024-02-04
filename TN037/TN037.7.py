@@ -64,9 +64,6 @@ def calculate_percent_recovery(input_df, enrich_df):
 enrichment_recovery = calculate_percent_recovery(input, enrichment)
 flowthrough_recovery = calculate_percent_recovery(input, flowthrough)
 
-# Do I need to change flowthrough values because of bad assumptions?
-# flowthrough_recovery["percent_recovery"] = flowthrough_recovery["percent_recovery"]/5
-
 output = pd.concat([enrichment_recovery, flowthrough_recovery])
 output.to_excel("TN037_7_output.xlsx", index=False)
 
@@ -84,4 +81,8 @@ def plot_percent_recovery(df, title):
 
 plot_percent_recovery(output, "Percent Recovery")
 
+# Do I need to change flowthrough values because of bad assumptions?
 
+flowthrough_recovery["percent_recovery"] = flowthrough_recovery["percent_recovery"]/3
+normalized = pd.concat([enrichment_recovery, flowthrough_recovery])
+plot_percent_recovery(normalized, "Normalized Percent Recovery")
