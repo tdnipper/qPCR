@@ -95,3 +95,20 @@ plot_percent_recovery(normalized, "Normalized Percent Recovery")
 normalized_40 = pd.concat([enrichment_recovery, flowthrough_recovery])
 normalized_40["percent_recovery"] = normalized_40["percent_recovery"]/2
 plot_percent_recovery(normalized_40, "Normalized 40% Percent Recovery")
+
+# Input samples from new RT
+data_redo = import_file("TN037_7_reRT.xlsx")
+
+samples_redo = list(data_redo["Sample Name"].unique())
+
+input_redo, enrichment_redo, flowthrough_redo = sort_rows(
+    data_redo, samples_redo
+)
+
+enrichment_redo = calculate_percent_recovery(input_redo, enrichment_redo)
+flowthrough_redo = calculate_percent_recovery(input_redo, flowthrough_redo)
+
+output_redo = pd.concat([enrichment_redo, flowthrough_redo])
+output_redo.to_excel("TN037_7_reRT_output.xlsx", index=False)
+
+plot_percent_recovery(output_redo, "Percent Recovery after reRT")
