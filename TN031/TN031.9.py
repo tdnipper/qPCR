@@ -4,8 +4,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def import_file(filename):
-    """This function will import, take the mean, and format replicate files."""
+def import_file(filename: str) -> pd.DataFrame:
+    """This function will import and format files given as a string and return a dataframe."""
     df = (
         pd.read_excel(
             filename,
@@ -25,8 +25,8 @@ data = import_file("TN031_9.xlsx")
 
 
 # Sort rows based on user defined categories in a given column into new dataframes
-def sort_rows(df, categories, colname):
-    """Sort user defined rows into different user supplied categories."""
+def sort_rows(df: pd.DataFrame, categories: list, colname: str) -> tuple[pd.DataFrame]:
+    """Sort user defined rows into different user supplied categories and return tuple of dataframes."""
     dfs = {categories: pd.DataFrame() for categories in categories}
 
     for index, row in df.iterrows():
@@ -75,8 +75,8 @@ output.to_excel("TN031.9 ddCT.xlsx")
 
 
 # Plot foldchange
-def plot_foldchange(df, title):
-    """Plot foldchange."""
+def plot_foldchange(df: pd.DataFrame, title: str) -> plt:
+    """Plot foldchange using a given dataframe and title string."""
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(10, 5))
     ax = sns.barplot(data=df, errorbar="sd")
@@ -123,9 +123,9 @@ rename = {
 
 
 # Rename columns
-def rename_columns(df, rename):
-    """Rename columns."""
-    df["Sample Name"] = df["Well Position"].map(rename)
+def rename_columns(df: pd.DataFrame, rename_dict: dict) -> pd.DataFrame:
+    """Rename columns using a dictionary with values for new names."""
+    df["Sample Name"] = df["Well Position"].map(rename_dict)
     df = df.dropna()
     return df
 
@@ -134,7 +134,7 @@ melt_curve = rename_columns(melt_curve, rename)
 
 
 # Plot melt curve
-def plot_melt_curve(df, title):
+def plot_melt_curve(df: pd.DataFrame, title: str) -> plt:
     """Plot melt curve."""
     # Separate into mock and dox treated dataframes
     df_mock = df[df["Sample Name"].str.contains("mock")]
