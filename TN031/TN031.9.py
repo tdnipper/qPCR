@@ -120,7 +120,8 @@ rename = {
 # Rename columns
 def rename_columns(df, rename):
     """Rename columns."""
-    df["Sample Name"] = df["Well Position"].map(rename).dropna()
+    df["Sample Name"] = df["Well Position"].map(rename)
+    df = df.dropna()
     return df
 
 melt_curve = rename_columns(melt_curve, rename)
