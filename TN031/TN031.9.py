@@ -86,3 +86,63 @@ def plot_foldchange(df, title):
     plt.savefig(f"TN031.9 {title}.png", dpi=300)
 
 plot_foldchange(ddCT_foldchange, "DUSP11 Foldchange during CRISPRi induction")
+
+# Import melt-curve data
+
+melt_curve = pd.read_excel("TN031_9.xlsx", sheet_name="Melt Curve Raw Data", skiprows=46)
+# Make dictionary to rename columns
+rename = {
+    "A1":"mock 24 DUSP11",
+    "A2":"mock 24 DUSP11",
+    "A3":"mock 24 DUSP11",
+    "A4":"mock 24 actin",
+    "A5":"mock 24 actin",
+    "A6":"mock 24 actin",
+    "B1":"mock 48 DUSP11",
+    "B2":"mock 48 DUSP11",
+    "B3":"mock 48 DUSP11",
+    "B4":"mock 48 actin",
+    "B5":"mock 48 actin",
+    "B6":"mock 48 actin",
+    "C1":"dox 24 DUSP11",
+    "C2":"dox 24 DUSP11",
+    "C3":"dox 24 DUSP11",
+    "C4":"dox 24 actin",
+    "C5":"dox 24 actin",
+    "C6":"dox 24 actin",
+    "D1":"dox 48 DUSP11",
+    "D2":"dox 48 DUSP11",
+    "D3":"dox 48 DUSP11",
+    "D4":"dox 48 actin",
+    "D5":"dox 48 actin",
+    "D6":"dox 48 actin",
+    }
+# Rename columns
+def rename_columns(df, rename):
+    """Rename columns."""
+    df["Sample Name"] = df["Well Position"].map(rename).dropna()
+    return df
+
+melt_curve = rename_columns(melt_curve, rename)
+
+# Plot melt curve
+def plot_melt_curve(df, title):
+    """Plot melt curve."""
+    # Separate into mock and dox treated dataframes
+    df_mock = df[df["Sample Name"].str.contains("mock")]
+    df_dox = df[df["Sample Name"].str.contains("dox")]
+    # Combine mock and dox plots into one figure of separate plots
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    g_mock = sns.lineplot(data=df_mock, x="Reading", y="Derivative", hue="Sample Name")
+    g_mock.set_title(f"Mock - {title}")
+    g_mock.set(xlabel="Reading", ylabel="Derivative")
+    plt.subplot(1, 2, 2)
+    g_dox = sns.lineplot(data=df_dox, x="Reading", y="Derivative", hue="Sample Name")
+    g_dox.set_title(f"Dox Treated - {title}")
+    g_dox.set(xlabel="Reading", ylabel="Derivative")
+
+    plt.tight_layout()
+    plt.savefig(f"TN031.9 Combined - {title}.png", dpi=300)
+
+plot_melt_curve(melt_curve, "Melt Curve")
