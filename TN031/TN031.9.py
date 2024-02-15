@@ -79,7 +79,7 @@ def plot_foldchange(df, title):
     """Plot foldchange."""
     sns.set_theme(style="whitegrid")
     plt.figure(figsize=(10, 5))
-    ax = sns.barplot(data=df, errorbar="sd")
+    ax = sns.barplot(data=df, errorbar="se")
     ax.set_title(title)
     ax.set_xlabel("Timepoint")
     ax.set_ylabel("Foldchange")
