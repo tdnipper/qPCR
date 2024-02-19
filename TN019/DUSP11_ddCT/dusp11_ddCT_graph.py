@@ -11,11 +11,14 @@ plot = sns.barplot(
     x="Sample Name",
     y="value",
     errorbar="sd",
+    hue = "Sample Name",
     palette="Paired",
+    legend=False
 )
 plt.xlabel(" ")
 plt.ylabel("foldchange")
 plt.ylim(0,1)
 plt.legend(title="")
 plt.title("DUSP11 mRNA foldchange during infection")
-plt.savefig("DUSP11_ddCT.png", dpi=300, format="png")
+plt.savefig("TN019.21_DUSP11_ddCT.png", dpi=300, format="png")
+plt.savefig("TN019.21_DUSP11_ddCT.svg", dpi=300, format="svg")
