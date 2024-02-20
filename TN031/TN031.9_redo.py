@@ -23,6 +23,7 @@ def import_file(filename: str) -> pd.DataFrame:
 
 data = import_file("TN031_9_redo.xlsx")
 
+
 # Sort rows based on user defined categories in a given column into new dataframes
 def sort_rows(df: pd.DataFrame, categories: list, colname: str) -> tuple[pd.DataFrame]:
     """Sort user defined rows into different user supplied categories and return tuple of dataframes."""
@@ -37,6 +38,7 @@ def sort_rows(df: pd.DataFrame, categories: list, colname: str) -> tuple[pd.Data
                 )
                 break
     return tuple(dfs.values())
+
 
 # Sort into 24 and 48 hour timepoints
 t24, t48 = sort_rows(data, ["24", "48"], "Sample Name")
@@ -79,8 +81,9 @@ def plot_foldchange(df: pd.DataFrame, title: str) -> plt:
     plt.figure(figsize=(10, 5))
     ax = sns.barplot(data=df, errorbar="sd")
     ax.set_title(title)
-    ax.set_xlabel("Timepoint")
-    ax.set_ylabel("Foldchange")
+    ax.set_xlabel("Hours Post-Infection")
+    ax.set_ylabel("mRNA Foldchange/Mock")
+    ax.set_ylim(0, 1)
     plt.savefig(f"TN031.9 redo {title}.png", dpi=300)
 
 
