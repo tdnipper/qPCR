@@ -22,7 +22,7 @@ def import_file(filename) -> pd.DataFrame:
 data = import_file("TN042_3.xlsx")
 
 
-# Create separate dataframes using 18S and target genes
+# Filter the data based on target gene and take the mean of the cT
 def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
     """Filter the data based on the target gene and take the mean of the cT."""
     filtered = df[df["Target Name"].str.contains(target)].copy()
@@ -30,14 +30,13 @@ def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
     return filtered
 
 
-# Filter data by target gene
 target_dict = {}
 targets = ["18S", "DUSP11", "IFNB", "MX1"]
 for target in targets:
     target_dict[target.lower()] = filter_targets(data, target)
 
 
-# Define function to sort data by sample name and remove duplicates, keeping only CT mean
+# Sort data by sample name and remove duplicates, keeping only CT mean
 def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     return (
         df[df["Sample Name"] == sample_name]
@@ -49,7 +48,6 @@ def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
 sample_names = ["+dox mock", "-dox mock", "+dox ix", "-dox ix"]
 results = {}
 
-# Process target_dict to drop duplicates and keep mean CT only
 for key, data in target_dict.items():
     for sample in sample_names:
         results[f"{key}_{sample}"] = process_data(data, sample)
