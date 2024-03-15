@@ -34,9 +34,10 @@ def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
 target_dict = {}
 targets = ["18S", "DUSP11", "IFNB", "MX1"]
 for target in targets:
-    target_dict[target] = filter_targets(data, target)
+    target_dict[target.lower()] = filter_targets(data, target)
 
-# Define function to sort data by sample name and remove duplicates
+
+# Define function to sort data by sample name and remove duplicates, keeping only CT mean
 def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     return (
         df[df["Sample Name"] == sample_name]
@@ -45,23 +46,17 @@ def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     )
 
 
-data_dict = {
-    "18S": target_dict["18S"],
-    "dusp11": target_dict["DUSP11"],
-    "ifnb": target_dict["IFNB"],
-    "mx1": target_dict["MX1"],
-}
 sample_names = ["+dox mock", "-dox mock", "+dox ix", "-dox ix"]
 results = {}
 
-# Process data for each target gene and sample name
-for key, data in data_dict.items():
+# Process target_dict to drop duplicates and keep mean CT only
+for key, data in target_dict.items():
     for sample in sample_names:
         results[f"{key}_{sample}"] = process_data(data, sample)
 
 
 # Calculate ddCT during infection for all targets during both dox treatment states
-def calculate_ddCT_ix(results, gene, treat, control_gene="18S"):
+def calculate_ddCT_ix(results, gene, treat, control_gene="18s"):
     return (
         results[f"{gene}_{treat} ix"]["mean"].values
         - results[f"{control_gene}_{treat} ix"]["mean"].values
@@ -72,7 +67,7 @@ def calculate_ddCT_ix(results, gene, treat, control_gene="18S"):
 
 
 # Calculate ddCT during dox treatment for mock samples only
-def calculate_ddCT_dox(results, gene, control_gene="18S"):
+def calculate_ddCT_dox(results, gene, control_gene="18s"):
     return (
         results[f"{gene}_+dox mock"]["mean"].values
         - results[f"{control_gene}_+dox mock"]["mean"].values
