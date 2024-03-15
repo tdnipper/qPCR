@@ -31,12 +31,12 @@ def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
 
 
 target_dict = {}
-targets = ["18S", "DUSP11", "IFNB", "MX1"]
+targets = ["18S", "DUSP11", "IFNB", "MX1"] # These must match the input data including case
 for target in targets:
     target_dict[target.lower()] = filter_targets(data, target)
 
 
-# Sort data by sample name and remove duplicates, keeping only CT mean
+# Sort data by sample name (+- dox and ix) and remove duplicates, keeping only CT mean
 def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     return (
         df[df["Sample Name"] == sample_name]
@@ -74,6 +74,7 @@ def calculate_ddCT_dox(results, gene, control_gene="18s"):
         - results[f"{control_gene}_-dox mock"]["mean"].values
     )
 
+# Note: can probably combine these two functions if we define the dox and ix states
 
 ddct_results = {}
 ddct_results_dox = {}
