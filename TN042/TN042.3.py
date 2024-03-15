@@ -30,10 +30,9 @@ def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
 
 # Filter data by target gene
 target_dict = {}
-targets = ["18S", "dusp11", "ifnb", "mx1"]
+targets = ["18S", "DUSP11", "IFNB", "MX1"]
 for target in targets:
     target_dict[target] = filter_targets(data, target)
-
 
 # Define function to sort data by sample name and remove duplicates
 def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
@@ -46,9 +45,9 @@ def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
 
 data_dict = {
     "18S": target_dict["18S"],
-    "dusp11": target_dict["dusp11"],
-    "ifnb": target_dict["ifnb"],
-    "mx1": target_dict["mx1"],
+    "dusp11": target_dict["DUSP11"],
+    "ifnb": target_dict["IFNB"],
+    "mx1": target_dict["MX1"],
 }
 sample_names = ["+dox mock", "-dox mock", "+dox ix", "-dox ix"]
 results = {}
