@@ -20,7 +20,7 @@ def import_file(filename) -> pd.DataFrame:
 data = import_file("TN042_3.xlsx")
 
 
-# Create control dataframes using 18S and target genes
+# Create separate dataframes using 18S and target genes
 def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
     """Filter the data based on the target gene and take the mean of the cT."""
     filtered = df[df["Target Name"].str.contains(target)].copy()
@@ -28,14 +28,14 @@ def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
     return filtered
 
 
-data_18S = filter_targets(data, "18S")
-data_dusp11 = filter_targets(data, "DUSP11")
-data_ifnb = filter_targets(data, "IFNB")
-data_mx1 = filter_targets(data, "MX1")
+# Filter data by target gene
+target_dict = {}
+targets = ["18S", "dusp11", "ifnb", "mx1"]
+for target in targets:
+    target_dict[target] = filter_targets(data, target)
 
-# Make mock sorted dataframes
 
-
+# Define function to sort data by sample name and remove duplicates
 def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     return (
         df[df["Sample Name"] == sample_name]
@@ -44,21 +44,23 @@ def process_data(df: pd.DataFrame, sample_name: str) -> pd.DataFrame:
     )
 
 
-data_dict = {"18S": data_18S, "dusp11": data_dusp11, "ifnb": data_ifnb, "mx1": data_mx1}
-
+data_dict = {
+    "18S": target_dict["18S"],
+    "dusp11": target_dict["dusp11"],
+    "ifnb": target_dict["ifnb"],
+    "mx1": target_dict["mx1"],
+}
 sample_names = ["+dox mock", "-dox mock", "+dox ix", "-dox ix"]
-
 results = {}
 
+# Process data for each target gene and sample name
 for key, data in data_dict.items():
     for sample in sample_names:
         results[f"{key}_{sample}"] = process_data(data, sample)
-dCT_dusp11_dox = (
-    results["dusp11_+dox mock"]["mean"].values - results["18S_+dox mock"]["mean"].values
-)
+
 
 # Calculate ddCT during infection for all targets during both dox treatment states
-def calculate_ddCT(results, gene, treat, control_gene="18S"):
+def calculate_ddCT_ix(results, gene, treat, control_gene="18S"):
     return (
         results[f"{gene}_{treat} ix"]["mean"].values
         - results[f"{control_gene}_{treat} ix"]["mean"].values
@@ -66,6 +68,7 @@ def calculate_ddCT(results, gene, treat, control_gene="18S"):
         results[f"{gene}_{treat} mock"]["mean"].values
         - results[f"{control_gene}_{treat} mock"]["mean"].values
     )
+
 
 # Calculate ddCT during dox treatment for mock samples only
 def calculate_ddCT_dox(results, gene, control_gene="18S"):
@@ -77,6 +80,7 @@ def calculate_ddCT_dox(results, gene, control_gene="18S"):
         - results[f"{control_gene}_-dox mock"]["mean"].values
     )
 
+
 ddct_results = {}
 ddct_results_dox = {}
 genes = ["dusp11", "ifnb", "mx1"]
@@ -84,23 +88,25 @@ treatments = ["-dox", "+dox"]
 
 for treat in treatments:
     for gene in genes:
-        ddct_results[f"{gene}_{treat}"] = calculate_ddCT(results, gene, treat)
+        ddct_results[f"{gene}_{treat}"] = calculate_ddCT_ix(results, gene, treat)
 
 for gene in genes:
     ddct_results_dox[gene] = calculate_ddCT_dox(results, gene)
 
+# Generate ddCT and foldchange dataframes during infection for all conditions
 ddct_df_ix = pd.DataFrame()
 foldchange_df_ix = pd.DataFrame()
 for key, ddct in ddct_results.items():
     ddct_df_ix[key] = ddct
-    foldchange_df_ix[f'{key} foldchange'] = 2 ** -ddct
+    foldchange_df_ix[f"{key} foldchange"] = 2**-ddct
 ddct_df_ix.to_excel("ddct_ix.xlsx")
 foldchange_df_ix.to_excel("foldchange_ix.xlsx")
 
+# Generate ddCT and foldchange dataframes during dox induction only for mock infected cells
 ddct_df_dox = pd.DataFrame()
-foldchange_df_dox = pd.DataFrame()    
+foldchange_df_dox = pd.DataFrame()
 for key, ddct in ddct_results_dox.items():
     ddct_df_dox[key] = ddct
-    foldchange_df_dox[f"{key} foldchange"] = 2 ** -ddct
+    foldchange_df_dox[f"{key} foldchange"] = 2**-ddct
 ddct_df_dox.to_excel("ddct_dox.xlsx")
 foldchange_df_dox.to_excel("foldchange_dox.xlsx")
