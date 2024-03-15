@@ -22,7 +22,7 @@ def import_file(filename) -> pd.DataFrame:
 data = import_file("TN042_3.xlsx")
 
 
-# Filter the data based on target gene and take the mean of the cT
+# Filter the data based on target gene and take the mean of the cT for each Sample Name
 def filter_targets(df: pd.DataFrame, target: str) -> pd.DataFrame:
     """Filter the data based on the target gene and take the mean of the cT."""
     filtered = df[df["Target Name"].str.contains(target)].copy()
