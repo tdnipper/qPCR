@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import pandas as pd
+import altair as alt
 
 
 def import_file(filename) -> pd.DataFrame:
@@ -94,6 +95,9 @@ foldchange_df_ix = pd.DataFrame()
 for key, ddct in ddct_results.items():
     ddct_df_ix[key] = ddct
     foldchange_df_ix[f"{key} foldchange"] = 2**-ddct
+foldchange_df_ix = foldchange_df_ix.melt(var_name="Condition", value_name="Fold Change")
+ddct_df_ix = ddct_df_ix.melt(var_name="Condition", value_name="ddCT")
+foldchange_df_ix["Condition"] = foldchange_df_ix["Condition"].str.replace("_", " ")
 ddct_df_ix.to_excel("ddct_ix.xlsx")
 foldchange_df_ix.to_excel("foldchange_ix.xlsx")
 
@@ -103,5 +107,20 @@ foldchange_df_dox = pd.DataFrame()
 for key, ddct in ddct_results_dox.items():
     ddct_df_dox[key] = ddct
     foldchange_df_dox[f"{key} foldchange"] = 2**-ddct
+ddct_df_dox = ddct_df_dox.melt(var_name="Condition", value_name="ddCT")
 ddct_df_dox.to_excel("ddct_dox.xlsx")
+foldchange_df_dox = foldchange_df_dox.melt(var_name="Condition", value_name="Fold Change")
 foldchange_df_dox.to_excel("foldchange_dox.xlsx")
+
+title = alt.TitleParams("Fold Change During Infection", anchor="middle")
+ix_plot = alt.Chart(foldchange_df_ix, title = title).mark_bar().encode(
+    alt.X("Condition", title="", axis=alt.Axis(labelAngle=-45)),
+    alt.Y("Fold Change", title="Fold Change"),
+)
+ix_plot.save("ix_plot.png", ppi=300)
+
+dox_plot = alt.Chart(foldchange_df_dox, title = "Fold Change During Dox Treatment").mark_bar().encode(
+    alt.X("Condition", title="", axis=alt.Axis(labelAngle=-45)),
+    alt.Y("Fold Change", title="Fold Change"),
+)
+dox_plot.save("dox_plot.png", ppi=300)
