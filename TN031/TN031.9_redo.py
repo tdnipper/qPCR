@@ -81,7 +81,7 @@ def plot_foldchange(df: pd.DataFrame, title: str) -> plt:
     plt.figure(figsize=(10, 5))
     ax = sns.barplot(data=df, errorbar="sd")
     ax.set_title(title)
-    ax.set_xlabel("Hours Post-Infection")
+    ax.set_xlabel("Hours Post-Induction")
     ax.set_ylabel("mRNA Foldchange/Mock")
     ax.set_ylim(0, 1)
     plt.savefig(f"TN031.9 redo {title}.png", dpi=300)
