@@ -112,11 +112,12 @@ for key, ddct in ddct_results_dox.items():
 ddct_df_dox = ddct_df_dox.melt(var_name="Condition", value_name="ddCT")
 ddct_df_dox.to_excel("ddct_dox.xlsx")
 foldchange_df_dox = foldchange_df_dox.melt(var_name="Condition", value_name="Fold Change")
+foldchange_df_dox["Condition"] = foldchange_df_dox["Condition"].str.split("foldchange").str[0]
 foldchange_df_dox.to_excel("foldchange_dox.xlsx")
 
 title = alt.TitleParams("Fold Change During Infection", anchor="middle")
 ix_plot = alt.Chart(foldchange_df_ix, title = title).mark_bar().encode(
-    alt.X("Condition", title="", axis=alt.Axis(labelAngle=-45)),
+    alt.X("Condition", title="", axis=alt.Axis(labelAngle=0)),
     alt.Y("Fold Change", title="Fold Change vs. Mock Infected"),
     xOffset=alt.XOffset("dox:N"),
     color = alt.Color("dox").title("Dox Treatment"),
@@ -124,7 +125,7 @@ ix_plot = alt.Chart(foldchange_df_ix, title = title).mark_bar().encode(
 ix_plot.save("ix_plot.png", ppi=300)
 
 dox_plot = alt.Chart(foldchange_df_dox, title = "Fold Change During Dox Treatment").mark_bar().encode(
-    alt.X("Condition", title="", axis=alt.Axis(labelAngle=-45)),
+    alt.X("Condition", title="", axis=alt.Axis(labelAngle=0)),
     alt.Y("Fold Change", title="Fold Change vs. Untreated")
 ).properties(width=300)
 dox_plot.save("dox_plot.png", ppi=300)
