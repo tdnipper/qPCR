@@ -2,7 +2,7 @@
 
 import pandas as pd
 import altair as alt
-
+import plotly.express as px
 
 def import_file(filename) -> pd.DataFrame:
     """This function will import, take the mean, and format replicate files."""
@@ -115,6 +115,7 @@ foldchange_df_dox = foldchange_df_dox.melt(var_name="Condition", value_name="Fol
 foldchange_df_dox["Condition"] = foldchange_df_dox["Condition"].str.split("foldchange").str[0]
 foldchange_df_dox.to_excel("foldchange_dox.xlsx")
 
+# Try altair out
 title = alt.TitleParams("Fold Change During Infection", anchor="middle")
 ix_plot = alt.Chart(foldchange_df_ix, title = title).mark_bar().encode(
     alt.X("Condition", title="", axis=alt.Axis(labelAngle=0)),
@@ -129,3 +130,7 @@ dox_plot = alt.Chart(foldchange_df_dox, title = "Fold Change During Dox Treatmen
     alt.Y("Fold Change", title="Fold Change vs. Untreated")
 ).properties(width=300)
 dox_plot.save("dox_plot.png", ppi=300)
+
+# Try plotly out, much shorter than altair and graphs are interactive when html
+fig = px.bar(foldchange_df_ix, x="Condition", y="Fold Change", color="dox", barmode="group", title="Fold Change During Infection")
+fig.write_image("ix_plot_plotly.svg")
