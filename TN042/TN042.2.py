@@ -33,9 +33,13 @@ ttest = pg.ttest(
     alternative="two-sided",
 )
 ttest.to_excel("TN042.2_ttest.xlsx")
+
+
 def annotate_stats(pvalue, y, h):
     plt.plot([0, 0, 1, 1], [y, y + h, y + h, y], lw=1, c="k")
     plt.text(0.5, y + 2 * h, f"p = {pvalue:.2}", ha="center", va="center")
+
+
 annotate_stats(ttest["p-val"].values[0], 5e6, 5e5)
 
 plt.savefig("TN042.2.png", dpi=300)
