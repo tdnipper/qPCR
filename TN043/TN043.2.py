@@ -79,5 +79,7 @@ foldchange_df_ix = foldchange_df_ix.melt(var_name="Sample", value_name="Fold Cha
 # Plot the fold change during infection
 fig = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("dusp11")], x="Sample", y="Fold Change", title="Fold Change During Infection")
 fig.write_image("TN043.2_dusp11.svg")
+fig.write_image("TN043.2_dusp11.png")
 fig2 = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("ifnb")], x="Sample", y="Fold Change", title="Fold Change During Infection")
 fig2.write_image("TN043.2_ifnb.svg")
+fig2.write_image("TN043.2_ifnb.png")
