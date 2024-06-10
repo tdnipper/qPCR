@@ -27,6 +27,7 @@ plt.xlabel("DUSP11 status")
 plt.xticks([0, 1], ["WT", "Depleted"])  
 plt.ylim(1e5, 1e7)
 plt.title("Viral titer during DUSP11 depletion")
+plt.tight_layout()
 
 # Calculate the p-value
 ttest = pg.ttest(
