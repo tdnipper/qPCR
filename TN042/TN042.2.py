@@ -18,12 +18,15 @@ g = sns.swarmplot(
     edgecolor="black",
     linewidth=0.5,
 )
+sns.set_theme(style="whitegrid")
 g = sns.barplot(
     x="Virus", y="Titer", data=data, hue="Virus", errorbar=None, palette=bar
 )
 plt.yscale("log")
+plt.xlabel("DUSP11 status")
+plt.xticks([0, 1], ["WT", "Depleted"])  
 plt.ylim(1e5, 1e7)
-plt.title("WSN Titer during dox induction")
+plt.title("Viral titer during DUSP11 depletion")
 
 # Calculate the p-value
 ttest = pg.ttest(
@@ -40,6 +43,6 @@ def annotate_stats(pvalue, y, h):
     plt.text(0.5, y + 2 * h, f"p = {pvalue:.2}", ha="center", va="center")
 
 
-annotate_stats(ttest["p-val"].values[0], 5e6, 5e5)
+# annotate_stats(ttest["p-val"].values[0], 5e6, 5e5)
 
 plt.savefig("TN042.2.png", dpi=300)
