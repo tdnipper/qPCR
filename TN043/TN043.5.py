@@ -97,14 +97,14 @@ fig2 = sns.barplot(
 )
 ax[0].set_xticks(range(6))
 ax[1].set_xticks(range(6))
-labels = ["T0", "T1", "T2", "T4", "T6", "T8"]
+labels = ["0", "1", "2", "4", "6", "8"]
 ax[0].set_xticklabels(labels)
 ax[1].set_xticklabels(labels)
 ax[0].set_title("DUSP11 mRNA Fold Change")
 ax[1].set_title("IFNB mRNA Fold Change")
 ax[0].set_ylabel("Fold Change")
 ax[1].set_ylabel("")
-ax[0].set_xlabel("DUSP11")
-ax[1].set_xlabel("IFNB")
+ax[0].set_xlabel("Hours post-infection")
+ax[1].set_xlabel("Hours post-infection")
 plt.tight_layout()
 plt.savefig("TN043_5.png", dpi=300)
