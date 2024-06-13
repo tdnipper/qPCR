@@ -9,6 +9,7 @@ data = pd.read_excel("TN042.2.xlsx")
 
 dot = ["#87CEEB"]
 bar = ["#4682B4"]
+colors = ["#3274a1", "#aeccdb"]
 g = sns.swarmplot(
     x="Virus",
     y="Titer",
@@ -20,13 +21,15 @@ g = sns.swarmplot(
 )
 sns.set_theme(style="whitegrid")
 g = sns.barplot(
-    x="Virus", y="Titer", data=data, hue="Virus", errorbar=None, palette=bar
+    x="Virus", y="Titer", data=data, hue="Virus", errorbar=None, palette=colors
 )
+plt.tick_params(labelsize = 14)
 plt.yscale("log")
-plt.xlabel("DUSP11 status")
+plt.xlabel("DUSP11 status", fontsize=14)
+plt.ylabel("Titer", fontsize=14)
 plt.xticks([0, 1], ["WT", "Depleted"])  
-plt.ylim(1e5, 1e7)
-plt.title("Viral titer during DUSP11 depletion")
+plt.ylim(1e0, 1e7)
+plt.title("Viral titer during DUSP11 depletion", fontsize=16)
 plt.tight_layout()
 
 # Calculate the p-value
