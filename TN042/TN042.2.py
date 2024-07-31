@@ -3,7 +3,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import pingouin as pg
+import pinguoin as pg
 
 data = pd.read_excel("TN042.2.xlsx")
 
