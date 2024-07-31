@@ -18,7 +18,7 @@ args = parser.parse_args()
 infile = args.infile
 outfile = args.outfile
 
-def import_file(filename, input, control) -> pd.DataFrame:
+def import_file(filename) -> pd.DataFrame:
     """ Import file and parse control and experimental data"""
     df = (
         pd.read_excel(
@@ -29,8 +29,10 @@ def import_file(filename, input, control) -> pd.DataFrame:
     .groupby(by=["Sample Name", "Target Name"])
     )
     control = df["Control"]
-    target = df["Target"]
+    target = df["Target"] # Can be a list of multiples depending on input config
     return df, control, target
+
+data, control, target = import_file(infile)
 
 
     
