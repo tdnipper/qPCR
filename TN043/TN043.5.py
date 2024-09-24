@@ -79,6 +79,9 @@ foldchange_df_ix_dusp11.loc[:,"normalized"] = foldchange_df_ix_dusp11["Fold Chan
 foldchange_df_ix_ifnb = foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("ifnb")]
 
 # Plot the data
+
+color = ["#407193"]
+
 sns.set_theme(style="whitegrid")
 fig, ax = plt.subplots(1, 2, figsize=(10, 5))
 fig1 = sns.barplot(
@@ -86,14 +89,17 @@ fig1 = sns.barplot(
     x = "Sample",
     y = "normalized",
     ax=ax[0],
-
+    palette=color,
+    hue = "Sample"
 )
 
 fig2 = sns.barplot(
     data = foldchange_df_ix_ifnb,
     x = "Sample",
     y = "Fold Change",
-    ax=ax[1]
+    ax=ax[1],
+    palette=color,
+    hue = "Sample"
 )
 ax[0].set_xticks(range(6))
 ax[1].set_xticks(range(6))
@@ -107,4 +113,4 @@ ax[1].set_ylabel("")
 ax[0].set_xlabel("Hours post-infection")
 ax[1].set_xlabel("Hours post-infection")
 plt.tight_layout()
-plt.savefig("TN043_5.png", dpi=300)
+plt.savefig("TN043_5.svg")
