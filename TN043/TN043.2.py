@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
 import pandas as pd
-import altair as alt
-import plotly.express as px
+# import altair as alt
+# import plotly.express as px
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def import_file(filename) -> pd.DataFrame:
     """This function will import, take the mean, and format replicate files."""
@@ -76,10 +78,18 @@ for key, ddct in ddct_results.items():
     foldchange_df_ix[f"{key} foldchange"] = 2**-ddct
 foldchange_df_ix = foldchange_df_ix.melt(var_name="Sample", value_name="Fold Change")
 
-# Plot the fold change during infection
-fig = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("dusp11")], x="Sample", y="Fold Change", title="Fold Change During Infection")
-fig.write_image("TN043.2_dusp11.svg")
-fig.write_image("TN043.2_dusp11.png")
-fig2 = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("ifnb")], x="Sample", y="Fold Change", title="Fold Change During Infection")
-fig2.write_image("TN043.2_ifnb.svg")
-fig2.write_image("TN043.2_ifnb.png")
+# # Plot the fold change during infection
+# fig = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("dusp11")], x="Sample", y="Fold Change", title="Fold Change During Infection")
+# fig.write_image("TN043.2_dusp11.svg")
+# fig.write_image("TN043.2_dusp11.png")
+# fig2 = px.bar(foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("ifnb")], x="Sample", y="Fold Change", title="Fold Change During Infection")
+# fig2.write_image("TN043.2_ifnb.svg")
+# fig2.write_image("TN043.2_ifnb.png")
+
+fig = sns.barplot(data=foldchange_df_ix[foldchange_df_ix["Sample"].str.contains("dusp11")], x="Sample", y="Fold Change")
+plt.title("DUSP11 Fold Change During Infection")
+labels = ["T0", "T1", "T2", "T4", "T6", "T8"]
+plt.xticks(range(6), labels)
+plt.xlabel("")
+plt.tight_layout()
+plt.savefig("TN043.2_dusp11.png", dpi=300)
