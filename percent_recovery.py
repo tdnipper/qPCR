@@ -33,7 +33,7 @@ def import_file(filename) -> pd.DataFrame:
         sheet_name="Results",
         skiprows=46,
         usecols=["Sample Name", "Target Name", "CT"],
-        na_values="Undetermined",
+        na_values=["Undetermined", "NTC"],
     )
     return df
 
@@ -73,6 +73,7 @@ ct_recover.to_excel(f"{outfile}_output.xlsx")
 plot = sns.barplot(
     data=ct_recover, x="Name", y="percent_recovery", errorbar="sd", palette="Blues"
 )
-plt.xticks(rotation=45)
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
 plt.subplots_adjust(bottom=0.2)
 plt.savefig(f"{outfile}_output.png", dpi=300)
