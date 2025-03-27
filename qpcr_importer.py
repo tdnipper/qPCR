@@ -20,8 +20,6 @@ class FileImporter:
                 skiprows=46,
                 usecols=["Sample Name", "Target Name", "CT"],
                 na_values=["Undetermined", "NTC"]
-            ).reset_index()
-            .dropna()
-        )
+            ).reset_index().dropna()
         return df
     
