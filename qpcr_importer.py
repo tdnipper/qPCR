@@ -12,10 +12,10 @@ class FileImporter:
     def init (self, filename):
         self.filename = filename
 
-    def import_file (filename) -> pd.DataFrame:
+    def import_file(self) -> pd.DataFrame:
         """Import the excel file and return a pandas DataFrame."""
         df = pd.read_excel(
-                filename,
+                self.filename,
                 sheet_name="Results",
                 skiprows=46,
                 usecols=["Sample Name", "Target Name", "CT"],
