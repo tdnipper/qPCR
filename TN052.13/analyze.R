@@ -21,7 +21,7 @@ ddct_data <- ddct_data %>%
 library(ggplot2)
 ggplot(ddct_data, aes(x = `Sample Name`, y = fold_change)) +
   geom_boxplot() +
-  geom_jitter(width = 0.1, height = 0, size = 2) +
+  geom_point(size = 2) +
   labs(title = "DUSP11 mRNA During Early Infection",
        x = "Hours post-infection",
        y = "Fold Change") +
