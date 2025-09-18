@@ -9,4 +9,4 @@ dependencies:
   - numpy
   - openpyxl
   - matplotlib
-prefix: ${CONDA_PREFIX}/envs/graphing
+prefix: /home/thomas/miniconda3/envs/graphing
