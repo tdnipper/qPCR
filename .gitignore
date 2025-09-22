@@ -1,3 +1,4 @@
+*.DS_Store*
 venv
 .venv/bin/activate
 .venv/bin/activate.csh
@@ -11960,3 +11961,4 @@ venv
 .venv/lib/python3.10/site-packages/fonttools-4.47.2.dist-info/top_level.txt
 .venv/lib/python3.10/site-packages/fonttools-4.47.2.dist-info/WHEEL
 maddie
+.DS_Store
