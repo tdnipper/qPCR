@@ -17,9 +17,14 @@ ddct_data <- ddct_data %>%
   mutate(ddct = delta_ct - ref_delta_ct,
          fold_change = 2^(-ddct))
 
+library(writexl)
+ddct_data %>%
+  write_xlsx("TN052.13/ddct_results.xlsx")
+
 # Plot foldchange
 library(ggplot2)
-ggplot(ddct_data, aes(x = `Sample Name`, y = fold_change)) +
+library(ggpubr)
+p <- ggplot(ddct_data, aes(x = `Sample Name`, y = fold_change)) +
   geom_boxplot() +
   geom_point(size = 2) +
   labs(title = "DUSP11 mRNA During Early Infection",
@@ -30,6 +35,7 @@ ggplot(ddct_data, aes(x = `Sample Name`, y = fold_change)) +
     axis.ticks = element_blank(),
     plot.title = element_text(hjust = 0.5, size = 16, face = "bold")
   )
-
+p <- p + stat_compare_means(method = "anova", label.y = max(ddct_data$fold_change) * 1.02)
+p <- p + stat_compare_means(method = "wilcox.test", ref.group = "T0", label="p.signif", label.y = max(ddct_data$fold_change)*1.01)
 # Save the plot
 ggsave("TN052.13/fold_change_plot.png", width = 8, height = 6)
