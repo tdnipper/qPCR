@@ -47,7 +47,7 @@ fold_change_data <- delta_long %>%
     left_join(ref_delta, by = c("Target", "Task")) %>%
     mutate(ddct = delta_ct - ref_delta_ct,
            fold_change = 2^(-ddct)) %>%
-    filter(`Sample Name` != "mock", `Target` != "RNA18S1")
+    filter(`Sample Name` != c("mock", NA), `Target` != "RNA18S1")
 
 # Export to Excel
 write_xlsx(fold_change_data, "TN067/ddct_results.xlsx")
@@ -70,6 +70,7 @@ p <- ggplot(fold_change_data, aes(x = factor(`Sample Name`, levels = xorder), y 
           axis.title = element_text(size = 16)
   ) +
   stat_compare_means(method = "anova", label.y = max(fold_change_data$fold_change) * 1.02) +
-  stat_compare_means(method = "wilcox.test", ref.group = "T0", label="p.signif", label.y = max(fold_change_data$fold_change)*1.01)
+  stat_compare_means(method = "wilcox.test", paired = FALSE, ref.group = "T0", label="p.format", label.y = max(fold_change_data$fold_change)*1.01)
+
 # Save the plot
 ggsave("TN067/fold_change_plot.png", plot = p, width = 8, height = 6)
