@@ -23,8 +23,13 @@ df_melt <- read_excel("TN052.13/TN052_13_redo.xlsx", sheet = "Melt Curve Raw Dat
   select(`Well`, `Reading`, `Temperature`, `Derivative`)
 melt_names <- read_excel("TN052.13/TN052_13_redo.xlsx", sheet = "Sample Setup", skip = 46) %>%
   select(`Well`, `Sample Name`, `Target Name`, `Custom Task`)
-df_melt <- left_join(df_melt, melt_names, by = "Well")
-
+df_melt <- left_join(df_melt, melt_names, by = "Well") %>%
+  group_by(`Sample Name`, `Target Name`, `Custom Task`, `Temperature`) %>%
+  summarize(
+    Derivative_mean = mean(Derivative, na.rm = TRUE),
+    Derivative_sd = sd(Derivative, na.rm = TRUE),
+    .groups = "drop"
+  )
 
 # Plot
 library(ggplot2)
@@ -42,8 +47,9 @@ p <- ggplot(df_mean, aes(x = Cycle, y = Rn_mean, color = `Custom Task`)) +
 ggsave("TN052.13/amplification_curves.png", plot = p, width = 12, height = 8, dpi = 300)
 
 # Melt curve plot
-p_melt <- ggplot(df_melt, aes(x = Temperature, y = Derivative, color = `Custom Task`)) +
+p_melt <- ggplot(df_melt, aes(x = Temperature, y = Derivative_mean, color = `Custom Task`)) +
   geom_line() +
+  geom_ribbon(aes(ymin = Derivative_mean - Derivative_sd, ymax = Derivative_mean + Derivative_sd, fill = `Custom Task`), alpha = 0.2, color = NA, show.legend = FALSE) +
   facet_wrap(`Sample Name` ~ `Target Name`) +
   labs(title = "Melt Curves",
        x = "Temperature (°C)",
