@@ -53,14 +53,23 @@ fold_change_data <- delta_long %>%
 write_xlsx(fold_change_data, "TN067/ddct_results.xlsx")
 
 # Plot
-p <- ggplot(fold_change_data, aes(x = factor(`Sample Name`), y = fold_change)) +
+ymin <- 0
+ymax <- max(fold_change_data$fold_change, na.rm = TRUE)
+xorder <- c("mock", "T0", "T8", "T24", "T48")
+p <- ggplot(fold_change_data, aes(x = factor(`Sample Name`, levels = xorder), y = fold_change)) +
     geom_jitter(position = position_jitterdodge()) +
+    coord_cartesian(ylim = c(ymin, ymax * 1.05)) +
     labs(title = "DUSP11 mRNA during multicycle infection",
          x = "Hours post-infection",
          y = "Fold Change / Mock (18S)") +
     theme_classic() +
     theme(axis.line = element_blank(),
           axis.ticks = element_blank(),
-          plot.title = element_text(hjust = 0.5, size = 16, face = "bold"))
+          plot.title = element_text(hjust = 0.5, size = 20, face = "bold"),
+          axis.text = element_text(size = 14),
+          axis.title = element_text(size = 16)
+  ) +
+  stat_compare_means(method = "anova", label.y = max(fold_change_data$fold_change) * 1.02) +
+  stat_compare_means(method = "wilcox.test", ref.group = "T0", label="p.signif", label.y = max(fold_change_data$fold_change)*1.01)
 # Save the plot
 ggsave("TN067/fold_change_plot.png", plot = p, width = 8, height = 6)
