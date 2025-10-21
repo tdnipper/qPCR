@@ -38,7 +38,7 @@ class FileImporter:
             raise RuntimeError(f"failed to read Excel file '{self.filename}': {e}")
 
         # Keep rows with CT present and drop fully empty rows
-        df = df.dropna(subset=["CT"])
+        df = df.dropna(subset=["Sample Name", "CT"])
         # Reset index for cleanliness
         df = df.reset_index(drop=True)
         return df
