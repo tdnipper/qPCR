@@ -31,7 +31,7 @@ class FileImporter:
                 self.filename,
                 sheet_name="Results",
                 skiprows=46,
-                usecols=["Sample Name", "Target Name", "CT"],
+                usecols=["Sample Name", "Target Name", "CT", "Task"],
                 na_values=["Undetermined", "NTC"]
             )
         except Exception as e:
