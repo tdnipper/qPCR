@@ -23,7 +23,7 @@ data_dct <- data %>%
                 .names = "delta_ct_mock")) %>%
   select(`Target Name`, starts_with("delta_ct_")) %>%
   mutate(across(.cols = starts_with("delta_ct_"),
-                .fns = ~ 2^-.x,
+                .fns = ~ 2^-.x * 100,
                 .names = "percent_recovery_{.col}")) %>%
   rename_with(~ sub("delta_ct_", "", .x), starts_with("percent_recovery_")) %>%
   select(`Target Name`, starts_with("percent_recovery_")) %>%
@@ -63,7 +63,7 @@ ggsave("TN066/percent_recovery_plot.png", plot = p, width = 10, height = 6, dpi 
 
 # Plot dct normalized data
 p2 <- ggplot(data_alt, aes(x = `Target Name`, y = dct_norm)) +
-  geom_point(size = 2, alpha = 0.7, color = "blue") +
+  geom_point(size = 2, alpha = 0.7, color = "#253755") +
   labs(title = "NP Enrichment DCT Infected - Mock",
     x = "Target Gene",
     y = "DCT - 18S") +
@@ -76,7 +76,7 @@ p2 <- ggplot(data_alt, aes(x = `Target Name`, y = dct_norm)) +
 ggsave("TN066/dct_normalized_plot.png", plot = p2, width = 10, height = 6, dpi = 300)
 
 p3 <- ggplot(data_alt, aes(x = `Target Name`, y = dct)) +
-  geom_point(size = 2, alpha = 0.7, color = "red") +
+  geom_point(size = 2, alpha = 0.7, color = "#253755") +
   labs(title = "NP Enrichment DCT Infected - Mock",
     x = "Target Gene",
     y = "DCT") +
