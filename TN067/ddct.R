@@ -4,6 +4,8 @@ library(tidyr)
 library(writexl)
 library(ggplot2)
 library(ggpubr)
+library(rstatix)
+library(car)
 
 df <- read_excel("TN067/TN067.1_filtered.xlsx")
 
@@ -47,18 +49,45 @@ fold_change_data <- delta_long %>%
     left_join(ref_delta, by = c("Target", "Task")) %>%
     mutate(ddct = delta_ct - ref_delta_ct,
            fold_change = 2^(-ddct)) %>%
-    filter(`Sample Name` != c("mock", NA), `Target` != "RNA18S1")
+    filter(!`Sample Name` %in% c("mock", NA), `Target` != "RNA18S1")
 
 # Export to Excel
 write_xlsx(fold_change_data, "TN067/ddct_results.xlsx")
 
+# canonicalize sample name (remove space), drop NA samples and remove 'mock'
+fold_change_data <- fold_change_data %>%
+  rename(Sample_Name = `Sample Name`) %>%
+  filter(!is.na(Sample_Name), !Sample_Name %in% c("mock"))
+
+# --- NORMALITY TESTS (Shapiro–Wilk per group) ---
+by(fold_change_data$ddct, fold_change_data$Sample_Name, shapiro.test)
+normality <- fold_change_data %>%
+  group_by(Sample_Name) %>%
+  summarise(
+    W = shapiro.test(ddct)$statistic,
+    p_value = shapiro.test(ddct)$p.value
+  )
+print(normality)
+
+# --- HOMOGENEITY OF VARIANCE (Levene’s test) ---
+levene <- leveneTest(ddct ~ Sample_Name, data = fold_change_data)
+print(levene)
+
+# Compute and adjust p-values
+pvals <- fold_change_data %>%
+  pairwise_wilcox_test(ddct ~ Sample_Name, ref.group = "T0", p.adjust.method = "holm")
+
+pvals <- pvals %>%
+  arrange(group2) %>%
+  mutate(y.position = max(fold_change_data$fold_change, na.rm = TRUE) * (1 + 0.05 * row_number()))
+
 # Plot
 ymin <- 0
 ymax <- max(fold_change_data$fold_change, na.rm = TRUE)
-xorder <- c("mock", "T0", "T8", "T24", "T48")
-p <- ggplot(fold_change_data, aes(x = factor(`Sample Name`, levels = xorder), y = fold_change)) +
+xorder <- c("T0", "T8", "T24", "T48")
+p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = fold_change)) +
     geom_jitter(position = position_jitterdodge()) +
-    coord_cartesian(ylim = c(ymin, ymax * 1.05)) +
+    coord_cartesian(ylim = c(ymin, ymax * 1.2)) +
     labs(title = "DUSP11 mRNA during multicycle infection",
          x = "Hours post-infection",
          y = "Fold Change / Mock (18S)") +
@@ -69,8 +98,7 @@ p <- ggplot(fold_change_data, aes(x = factor(`Sample Name`, levels = xorder), y 
           axis.text = element_text(size = 14),
           axis.title = element_text(size = 16)
   ) +
-  stat_compare_means(method = "anova", label.y = max(fold_change_data$fold_change) * 1.02) +
-  stat_compare_means(method = "wilcox.test", paired = FALSE, ref.group = "T0", label="p.format", label.y = max(fold_change_data$fold_change)*1.01)
+  stat_pvalue_manual(pvals, label = "p.adj.signif", tip.length = 0.01, hide.ns = FALSE)
 
 # Save the plot
 ggsave("TN067/fold_change_plot.png", plot = p, width = 8, height = 6)
