@@ -59,38 +59,44 @@ fold_change_data <- fold_change_data %>%
   rename(Sample_Name = `Sample Name`) %>%
   filter(!is.na(Sample_Name), !Sample_Name %in% c("mock"))
 
+# convert fold change to log2fc
+fold_change_data <- fold_change_data %>%
+  mutate(log2fc = log2(fold_change))
+
 # --- NORMALITY TESTS (Shapiro–Wilk per group) ---
-by(fold_change_data$ddct, fold_change_data$Sample_Name, shapiro.test)
+by(fold_change_data$log2fc, fold_change_data$Sample_Name, shapiro.test)
 normality <- fold_change_data %>%
   group_by(Sample_Name) %>%
   summarise(
-    W = shapiro.test(ddct)$statistic,
-    p_value = shapiro.test(ddct)$p.value
+    W = shapiro.test(log2fc)$statistic,
+    p_value = shapiro.test(log2fc)$p.value
   )
 print(normality)
 
 # --- HOMOGENEITY OF VARIANCE (Levene’s test) ---
-levene <- leveneTest(ddct ~ Sample_Name, data = fold_change_data)
+levene <- leveneTest(log2fc ~ Sample_Name, data = fold_change_data)
 print(levene)
 
 # Compute and adjust p-values
 pvals <- fold_change_data %>%
-  pairwise_wilcox_test(ddct ~ Sample_Name, ref.group = "T0", p.adjust.method = "holm")
+  welch_anova_test(log2fc ~ Sample_Name)
 
-pvals <- pvals %>%
-  arrange(group2) %>%
-  mutate(y.position = max(fold_change_data$fold_change, na.rm = TRUE) * (1 + 0.05 * row_number()))
+gh <- games_howell_test(fold_change_data, log2fc ~ Sample_Name) %>%
+  mutate(y.position = max(fold_change_data$log2fc, na.rm = TRUE) * 1.05) %>%
+  filter(group1 == "T0")
 
 # Plot
-ymin <- 0
-ymax <- max(fold_change_data$fold_change, na.rm = TRUE)
+ymin <- min(fold_change_data$log2fc, na.rm = TRUE)
+ymax <- max(fold_change_data$log2fc, na.rm = TRUE)
+print(ymax)
 xorder <- c("T0", "T8", "T24", "T48")
-p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = fold_change)) +
+p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = log2fc)) +
     geom_jitter(position = position_jitterdodge()) +
-    coord_cartesian(ylim = c(ymin, ymax * 1.2)) +
+    coord_cartesian(ylim = c(ymin, ymax)) +
     labs(title = "DUSP11 mRNA during multicycle infection",
          x = "Hours post-infection",
-         y = "Fold Change / Mock (18S)") +
+         y = "Log2 Fold Change / Mock (18S)",
+         caption = "067.1, Games-Howell post-hoc test") +
     theme_classic() +
     theme(axis.line = element_blank(),
           axis.ticks = element_blank(),
@@ -98,7 +104,8 @@ p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = 
           axis.text = element_text(size = 14),
           axis.title = element_text(size = 16)
   ) +
-  stat_pvalue_manual(pvals, label = "p.adj.signif", tip.length = 0.01, hide.ns = FALSE)
+  stat_pvalue_manual(gh, label = "p.adj.signif", hide.ns = FALSE, x = "group2") + 
+  stat_welch_anova_test()
 
 # Save the plot
 ggsave("TN067/fold_change_plot.png", plot = p, width = 8, height = 6)
