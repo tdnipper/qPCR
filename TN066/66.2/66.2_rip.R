@@ -116,7 +116,7 @@ pub_data_infect <- enrich_out_infect %>%
 pub_mock <- ggplot(pub_data_mock, aes(x = Target.Name, y = percent_input, color = Sample_Type)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
     labs(title = "Mock Enrichment",
-         x = "Target Gene",
+         x = "",
          y = "Percent Input",
          color = "") +
     scale_y_log10(labels = label_number()) +
@@ -124,23 +124,22 @@ pub_mock <- ggplot(pub_data_mock, aes(x = Target.Name, y = percent_input, color 
     theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
           plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-          axis.title.x = element_text(size = 14),
           axis.title.y = element_text(size = 14),
           axis.text.y = element_text(size = 12))
 pub_infect <- ggplot(pub_data_infect, aes(x = Target.Name, y = percent_input, color = Sample_Type)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
     labs(title = "Infected Enrichment",
-         x = "Target Gene",
-         y = "Percent Input",
+         x = "",
+         y = "",
          color = "") +
     scale_y_log10(labels = label_number()) +
     coord_cartesian(ylim = c(0.01, 100)) +
     theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
           plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-          axis.title.x = element_text(size = 14),
-          axis.title.y = element_text(size = 14),
-          axis.text.y = element_text(size = 12))
+          axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.line.y = element_blank())
 pub_figure <- ggarrange(pub_mock, pub_infect, ncol = 2, nrow = 1, common.legend = TRUE, legend = "right")
-
+print(pub_figure)
 ggsave("TN066/66.2/66.2_rip_pub_figure.png", plot = pub_figure, width = 12, height = 6, dpi = 300)
