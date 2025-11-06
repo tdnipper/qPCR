@@ -24,6 +24,7 @@ p <- ggplot(df_percent, aes(x = Target.Name, y = foldchange)) +
   theme_classic() +
   labs(title = "Fold Change (+RnaseH / -RnaseH)",
        x = "Target Gene",
-       y = "Fold Change")
+       y = "Fold Change",
+       caption = "061.5, uni12/13RC no RT")
 print(p)
 ggsave("TN061/61.5/foldchange_plot.png", plot = p, width = 8, height = 6, dpi = 300)
