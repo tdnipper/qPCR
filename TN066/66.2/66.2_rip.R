@@ -3,6 +3,7 @@ library(tidyr)
 library(ggplot2)
 library(ggpubr)
 library(scales)
+library(stringr)
 
 df <- read.csv("TN066//66.2/66.2_filtered.csv")
 
@@ -108,17 +109,19 @@ ggsave("TN066/66.2/66.2_foldchange_plot.png", plot = p2, width = 10, height = 6,
 
 # Prepare publication figure without PB2
 pub_data_mock <- enrich_out_mock %>%
-    filter(Target.Name != "WSN_PB2")
+    filter(Target.Name != "WSN_PB2") %>%
+  mutate(Sample_Type = str_replace(Sample_Type, "mock_", ""))
 
 pub_data_infect <- enrich_out_infect %>%
-    filter(Target.Name != "WSN_PB2")
+    filter(Target.Name != "WSN_PB2") %>%
+  mutate(Sample_Type = str_replace(Sample_Type, "infected", ""))
 
 pub_mock <- ggplot(pub_data_mock, aes(x = Target.Name, y = percent_input, color = Sample_Type)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
     labs(title = "Mock Enrichment",
          x = "",
          y = "Percent Input",
-         color = "") +
+         color = "Bead") +
     scale_y_log10(labels = label_number()) +
     coord_cartesian(ylim = c(0.01, 100)) +
     theme_classic() +
