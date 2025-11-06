@@ -39,7 +39,7 @@ enrich_out <- data_enrich %>%
         values_to = "percent_input",
         names_prefix = "percent_input_"
     )
-write.csv(enrich_out, "TN066/66.2/66.2_rip_enrichment.csv", row.names = FALSE)
+write.csv(enrich_out, "TN066/66.2/66.2_percent_input_results.csv", row.names = FALSE)
 # Separate mock and infected for plotting
 enrich_out_mock <- enrich_out %>%
     filter(grepl("mock", Sample_Type))
@@ -59,7 +59,7 @@ p1_mock <- ggplot(enrich_out_mock, aes(x = Target.Name, y = percent_input, color
           axis.title.x = element_text(size = 14),
           axis.title.y = element_text(size = 14),
           axis.text.y = element_text(size = 12))
-ggsave("TN066/66.2/66.2_rip_enrichment_mock.png", plot = p1_mock, width = 10, height = 6, dpi = 300)
+ggsave("TN066/66.2/66.2_percent_input_mock.png", plot = p1_mock, width = 10, height = 6, dpi = 300)
 
 p1_infect <- ggplot(enrich_out_infect, aes(x = Target.Name, y = percent_input, color = Sample_Type)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
@@ -74,29 +74,29 @@ p1_infect <- ggplot(enrich_out_infect, aes(x = Target.Name, y = percent_input, c
           axis.title.x = element_text(size = 14),
           axis.title.y = element_text(size = 14),
           axis.text.y = element_text(size = 12))
-ggsave("TN066/66.2/66.2_rip_enrichment_infected.png", plot = p1_infect, width = 10, height = 6, dpi = 300)
+ggsave("TN066/66.2/66.2_percent_input_infected.png", plot = p1_infect, width = 10, height = 6, dpi = 300)
 
-# Calculate enrichment for mock and infected samples relative to IgG
-data_relative <- data_enrich %>%
-    mutate(infected = infected_NP_enrichment - infected_IgG_enrichment,
-           mock = mock_NP_enrichment - mock_IgG_enrichment) %>%
+# Calculate foldchange for mock and infected samples relative to IgG
+data_foldchange <- data_enrich %>%
+    mutate(infected = infect_enrich_NP - infect_enrich_IgG,
+           mock = mock_enrich_NP - mock_enrich_IgG) %>%
     select(Target.Name, Task, infected, mock) %>%
     mutate(across(c(infected, mock), ~ 2^-.x))
 
-# Pivot relative results longer for output
-data_long <- data_relative %>%
+# Pivot foldchange results longer for output
+data_foldchange_long <- data_foldchange %>%
     select(Target.Name, infected, mock, Task) %>%
     pivot_longer(cols = c(infected, mock),
                  names_to = "Condition",
                  values_to = "relative_percent_input",
                  names_prefix = "percent_input_")
-write.csv(data_long, "TN066/66.2/66.2_rip_results.csv")
+write.csv(data_foldchange_long, "TN066/66.2/66.2_foldchange_results.csv")
 
-p2 <- ggplot(data_long, aes(x = Target.Name, y = relative_percent_input, color = Condition)) +
+p2 <- ggplot(data_foldchange_long, aes(x = Target.Name, y = relative_percent_input, color = Condition)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
-    labs(title = "Relative Enrichment",
+    labs(title = "Enrichment",
          x = "Target Gene",
-         y = "Percent Input / IgG") +
+         y = "Foldchange / IgG") +
     scale_y_log10(labels = label_number()) +
     theme_classic() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
@@ -104,7 +104,7 @@ p2 <- ggplot(data_long, aes(x = Target.Name, y = relative_percent_input, color =
           axis.title.x = element_text(size = 14),
           axis.title.y = element_text(size = 14),
           axis.text.y = element_text(size = 12))
-ggsave("TN066/66.2/66.2_rip_plot.png", plot = p2, width = 10, height = 6, dpi = 300)
+ggsave("TN066/66.2/66.2_foldchange_plot.png", plot = p2, width = 10, height = 6, dpi = 300)
 
 # Prepare publication figure without PB2
 pub_data_mock <- enrich_out_mock %>%
