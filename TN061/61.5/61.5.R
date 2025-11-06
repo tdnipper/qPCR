@@ -12,11 +12,18 @@ df <- df %>% filter(Target.Name != "FFLUC")
 # Calculate enrichment from input for each sample
 df_percent <- df %>%
   mutate(`+RnaseH` = `+RnaseH_enrich` - `+RnaseH_input` - log2(0.1^-1)) %>%
-  mutate(`+RnaseH_percent_input` = 2^(-`+RnaseH`)*100) %>%
-  mutate(`-RnaseH` = `-RnaseH_enrich` - `-RnaseH_input`- log2(0.1^-1)) %>%
-  mutate(`-RnaseH_percent_input` = 2^(-`-RnaseH`)*100) %>%
-  select(Target.Name, `+RnaseH_percent_input`, `-RnaseH_percent_input`)
+  mutate(`+RnaseH_percent_input` = 2^(-`+RnaseH`)) %>%
+  mutate(`-RnaseH` = `-RnaseH_enrich` - `-RnaseH_input` - log2(0.1^-1)) %>%
+  mutate(`-RnaseH_percent_input` = 2^(-`-RnaseH`)) %>%
+  mutate(foldchange = `+RnaseH_percent_input` / `-RnaseH_percent_input`) %>%
+  select(Target.Name, `+RnaseH_percent_input`, `-RnaseH_percent_input`, foldchange)
+write.csv(df_percent, "TN061/61.5/percent_input.csv", row.names = FALSE)
 
-df_foldchange <- df %>%
-  mutate(`foldchange` = 2^-(`+RnaseH_enrich` - `-RnaseH_enrich`)) %>%
-  select(Target.Name, foldchange)
+p <- ggplot(df_percent, aes(x = Target.Name, y = foldchange)) +
+  geom_point() + 
+  theme_classic() +
+  labs(title = "Fold Change (+RnaseH / -RnaseH)",
+       x = "Target Gene",
+       y = "Fold Change")
+print(p)
+ggsave("TN061/61.5/foldchange_plot.png", plot = p, width = 8, height = 6, dpi = 300)
