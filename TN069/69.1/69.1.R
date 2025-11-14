@@ -1,6 +1,5 @@
 library(dplyr)
 library(tidyverse)
-library(ggplot2)
 
 df <- read.csv("TN069/69.1/TN069.1_filtered.csv")
 df <- df %>%
