@@ -11963,3 +11963,4 @@ venv
 .venv/lib/python3.10/site-packages/fonttools-4.47.2.dist-info/WHEEL
 maddie
 .DS_Store
+.Rproj.user
