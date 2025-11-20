@@ -52,7 +52,7 @@ fold_change_data <- delta_long %>%
 # Export to CSV
 write.csv(fold_change_data, "TN067/67.1/ddct_results.csv")
 
-# canonicalize sample name (remove space), drop NA samples and remove 'mock'
+# canonize sample name (remove space), drop NA samples and remove 'mock'
 fold_change_data <- fold_change_data %>%
   rename(Sample_Name = Sample.Name) %>%
   filter(!is.na(Sample_Name), !Sample_Name %in% c("mock"))
