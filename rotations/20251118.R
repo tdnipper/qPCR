@@ -68,7 +68,8 @@ data_infected <- data %>%
   select(Sample.Name, induction, Task, Target, delta_ct_infected) %>%
   pivot_wider(names_from = induction, values_from = delta_ct_infected, names_prefix = "delta_ct_") %>%
   mutate(ddct = delta_ct_induced - delta_ct_uninduced) %>%
-  mutate(fc = 2^(-ddct))
+  mutate(fc = 2^(-ddct))%>%
+  mutate(log2fc = log2(fc))
 
 data_mock <- data %>%
   filter(Sample.Name == "mock") %>%
@@ -85,10 +86,11 @@ data_mock <- data %>%
   select(Sample.Name, induction, Task, Target, delta_ct_mock) %>%
   pivot_wider(names_from = induction, values_from = delta_ct_mock, names_prefix = "delta_ct_") %>%
   mutate(ddct = delta_ct_induced - delta_ct_uninduced) %>%
-  mutate(fc = 2^(-ddct))
+  mutate(fc = 2^(-ddct)) %>%
+  mutate(log2fc = log2(fc))
 
 ddct_induction <- bind_rows(data_infected, data_mock) %>%
-  select(Sample.Name, Task, Target, ddct, fc)
+  select(Sample.Name, Task, Target, ddct, fc, log2fc)
 
 # Export to CSV
 write.csv(ddct_infection, "rotations/2025-11-18_MR_ddct_infection_results.csv")
