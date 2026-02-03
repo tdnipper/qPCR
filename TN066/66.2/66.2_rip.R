@@ -5,7 +5,7 @@ library(ggpubr)
 library(scales)
 library(stringr)
 
-df <- read.csv("TN066//66.2/66.2_filtered.csv")
+df <- read.csv("66.2_filtered.csv")
 
 # Calculate mean CT, pivot wider, and convert to numeric
 data <- df %>%
@@ -40,7 +40,7 @@ enrich_out <- data_enrich %>%
         values_to = "percent_input",
         names_prefix = "percent_input_"
     )
-write.csv(enrich_out, "TN066/66.2/66.2_percent_input_results.csv", row.names = FALSE)
+write.csv(enrich_out, "66.2_percent_input_results.csv", row.names = FALSE)
 # Separate mock and infected for plotting
 enrich_out_mock <- enrich_out %>%
     filter(grepl("mock", Sample_Type))
