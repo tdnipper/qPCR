@@ -1,4 +1,4 @@
-"","Target.Name","Task","Condition","relative_percent_input"
+"","Target.Name","Task","Condition","relative_foldchange"
 "1","RNA18S1",1,"infected",2.17849353724032
 "2","RNA18S1",1,"mock",4.58015577570658
 "3","RNA18S1",2,"infected",18.1744063224976
@@ -10,7 +10,7 @@
 "9","RNY4",1,"infected",183.33130337141
 "10","RNY4",1,"mock",6.54690025963132
 "11","RNY4",2,"infected",741.303579093642
-"12","RNY4",2,"mock",0.527433458992491
+"12","RNY4",2,"mock",0.527433458992492
 "13","WSN_PB2",1,"infected",177.798515281038
 "14","WSN_PB2",1,"mock",1.47053215750369
 "15","WSN_PB2",2,"infected",527.868792577407

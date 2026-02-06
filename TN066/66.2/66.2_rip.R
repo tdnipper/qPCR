@@ -5,7 +5,7 @@ library(ggpubr)
 library(scales)
 library(stringr)
 
-df <- read.csv("66.2_filtered.csv")
+df <- read.csv("TN066/66.2/66.2_filtered.csv")
 
 # Calculate mean CT, pivot wider, and convert to numeric
 data <- df %>%
@@ -89,11 +89,11 @@ data_foldchange_long <- data_foldchange %>%
     select(Target.Name, infected, mock, Task) %>%
     pivot_longer(cols = c(infected, mock),
                  names_to = "Condition",
-                 values_to = "relative_percent_input",
-                 names_prefix = "percent_input_")
+                 values_to = "relative_foldchange",
+                 names_prefix = "foldchange_")
 write.csv(data_foldchange_long, "TN066/66.2/66.2_foldchange_results.csv")
 
-p2 <- ggplot(data_foldchange_long, aes(x = Target.Name, y = relative_percent_input, color = Condition)) +
+p2 <- ggplot(data_foldchange_long, aes(x = Target.Name, y = relative_foldchange, color = Condition)) +
     geom_point(size = 2, position = position_dodge(width = 0.5)) +
     labs(title = "Enrichment",
          x = "Target Gene",
