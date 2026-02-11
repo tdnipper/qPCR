@@ -1,0 +1,25 @@
+Sample Name,Target Name,Task,CT
+input_+Rnasin,FFLUC,1.0,25.24239
+input_+Rnasin,FFLUC,1.0,24.599758
+input_+Rnasin,FFLUC,1.0,24.99438
+input_-Rnasin,FFLUC,1.0,24.967865
+input_-Rnasin,FFLUC,1.0,24.194616
+input_-Rnasin,FFLUC,1.0,24.59625
+trizol_+Rnasin,FFLUC,1.0,29.016457
+trizol_+Rnasin,FFLUC,1.0,29.564846
+trizol_+Rnasin,FFLUC,1.0,28.822632
+trizol_-Rnasin,FFLUC,1.0,32.61671
+trizol_-Rnasin,FFLUC,1.0,32.3694
+trizol_-Rnasin,FFLUC,1.0,31.929073
+input_+Rnasin,FFLUC,2.0,25.183168
+input_+Rnasin,FFLUC,2.0,24.084606
+input_+Rnasin,FFLUC,2.0,25.494755
+input_-Rnasin,FFLUC,2.0,24.130705
+input_-Rnasin,FFLUC,2.0,25.044275
+input_-Rnasin,FFLUC,2.0,25.059835
+trizol_+Rnasin,FFLUC,2.0,28.855055
+trizol_+Rnasin,FFLUC,2.0,29.27194
+trizol_+Rnasin,FFLUC,2.0,29.109499
+trizol_-Rnasin,FFLUC,2.0,32.400105
+trizol_-Rnasin,FFLUC,2.0,31.427296
+trizol_-Rnasin,FFLUC,2.0,31.989489

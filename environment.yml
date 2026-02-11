@@ -1,0 +1,12 @@
+name: graphing
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - seaborn
+  - pandas
+  - numpy
+  - openpyxl
+  - matplotlib
+prefix: /home/thomas/miniconda3/envs/graphing
