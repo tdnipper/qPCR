@@ -1,0 +1,29 @@
+# Raw data
+*.xls
+*.xlsx
+*.csv
+
+# Figs
+*.png
+*.jpeg
+*.tiff
+*.svg
+
+# VsCode
+.vscode
+
+# OS
+.DS_Store
+Thumbs.db
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
