@@ -43,3 +43,34 @@ class FileImporter:
         df = df.reset_index(drop=True)
         return df
     
+    def import_amp_data(self) -> pd.DataFrame:
+        """Import the amplification data from the excel file.
+        This method reads the Amplification Data sheet and returns a tidy DataFrame
+        with Sample Name, Target Name, Cycle, and Fluorescence. It will drop rows
+        with missing fluorescence values.
+        """
+        try:
+            df = pd.read_excel(
+                self.filename,
+                sheet_name="Amplification Data",
+                skiprows=46,
+                usecols=["Well", "Cycle", "Target Name", "Rn", "Delta Rn"],
+                na_values=["Undetermined", "NTC"]
+            )
+            df_samples = pd.read_excel(
+                self.filename,
+                sheet_name="Results",
+                skiprows=46,
+                usecols=["Well", "Sample Name", "Task"],
+                na_values=["Undetermined", "NTC"]
+            )
+        except Exception as e:
+            raise RuntimeError(f"failed to read Excel file '{self.filename}': {e}")
+        
+        # Merge the two dataframes on the 'Well' column to get Sample Name and Task in the amplification data
+        df = df.merge(df_samples, on="Well", how="left")
+        # Keep rows with fluorescence values present and drop fully empty rows
+        df = df.dropna(subset=["Rn", "Delta Rn"])
+        # Reset index for cleanliness
+        df = df.reset_index(drop=True)
+        return df
