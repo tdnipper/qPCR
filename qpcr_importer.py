@@ -70,7 +70,7 @@ class FileImporter:
         # Merge the two dataframes on the 'Well' column to get Sample Name and Task in the amplification data
         df = df.merge(df_samples, on="Well", how="left")
         # Keep rows with fluorescence values present and drop fully empty rows
-        df = df.dropna(subset=["Rn", "Delta Rn"])
+        df = df.dropna(subset=["Sample Name", "Rn", "Delta Rn"])
         # Reset index for cleanliness
         df = df.reset_index(drop=True)
         return df
