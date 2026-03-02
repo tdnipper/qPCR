@@ -37,9 +37,9 @@ df_amp <- read.csv("TN066/66.8/TN066.8_rep1_amp.csv") %>%
 		Rn_sd = sd(Rn, na.rm = TRUE),
 		.groups = "drop"
 	)
-p_amp <- ggplot(df_amp, aes(x = Cycle, y = Rn_mean, color = Sample.Name)) +
+p_amp <- ggplot(df_amp, aes(x = Cycle, y = Rn_mean, color = Task)) +
 	geom_line() +
-	geom_ribbon(aes(ymin = Rn_mean - Rn_sd, ymax = Rn_mean + Rn_sd, fill = Sample.Name), alpha = 0.2, color = NA, show.legend = FALSE) +
+	geom_ribbon(aes(ymin = Rn_mean - Rn_sd, ymax = Rn_mean + Rn_sd, fill = Task), alpha = 0.2, color = NA, show.legend = FALSE) +
 	theme_classic() + 
 	facet_grid(Target.Name ~ Sample.Name)
 ggsave("TN066/66.8/66.8_amp.png", plot = p_amp, width = 10, height = 6, dpi=300)
