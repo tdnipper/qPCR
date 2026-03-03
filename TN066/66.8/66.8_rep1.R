@@ -8,16 +8,16 @@ data <- df %>%
 	pivot_wider(names_from = Sample.Name, values_from = CT)	
 
 data_enrich <- data %>%
-	mutate(mock_FLAG = mock_FLAG - mock_IgG,
-		infect_FLAG = infect_FLAG - infect_IgG,
-		mock_m2 = mock_M2 - mock_IgG,
-		infect_m2 = infect_M2 - infect_IgG) %>%
-	mutate(across(.cols = c(mock_FLAG, infect_FLAG, mock_m2, infect_m2),
+	mutate(mock_FLAG_norm = mock_FLAG - mock_IgG,
+		infect_FLAG_norm = infect_FLAG - infect_IgG,
+		mock_m2_norm = mock_M2 - mock_IgG,
+		infect_m2_norm = infect_M2 - infect_IgG) %>%
+	mutate(across(.cols = c(mock_FLAG_norm, infect_FLAG_norm, mock_m2_norm, infect_m2_norm),
 		~ 2^-.x))	
 
 data_enrich_long <- data_enrich %>%
-    select(Target.Name, Task, mock_FLAG, infect_FLAG, mock_m2, infect_m2) %>%
-    pivot_longer(cols = c(infect_m2, mock_m2),
+    select(Target.Name, Task, mock_FLAG_norm, infect_FLAG_norm, mock_m2_norm, infect_m2_norm) %>%
+    pivot_longer(cols = c(infect_m2_norm, mock_m2_norm, infect_FLAG_norm, mock_FLAG_norm),
         names_to = "Condition",
         values_to = "normalized_foldchange",
         names_prefix = "foldchange_")
