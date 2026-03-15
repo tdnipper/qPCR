@@ -14,10 +14,8 @@ summary_data <- data %>%
 
 data_enrich <- summary_data %>%
   mutate(mock_M2_norm = mock_M2 - mock_IgG,
-		 infect_M2_norm = infect_M2 - infect_IgG,
-		 mock_M2_norm = mock_M2 - mock_IgG,
-		 infect_M2_norm = infect_M2 - mock_IgG) %>%
-  mutate(across(.cols = c(mock_M2_norm, infect_M2_norm, mock_M2_norm, infect_M2_norm),
+		 infect_M2_norm = infect_M2 - infect_IgG) %>%
+  mutate(across(.cols = c(mock_M2_norm, infect_M2_norm),
 				~ 2^-.x))
 
 data_enrich_long <- data_enrich %>%
