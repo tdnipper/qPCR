@@ -46,4 +46,4 @@ p2 <- ggplot(data_induction, aes(x = Target.Name, y = normalized_CT, color = Con
   theme_classic() +
   ylim(-5, 10) +
   labs(title = "CT Target - (-Dox) control", x = "Target", y = "Normalized CT")
-ggsave("TN066/66.9/TN066_9_induction_foldchange.png", plot = p2, width = 10, height = 6, dpi=300)
+ggsave("TN066/66.9/TN066_9_induction_normalized.png", plot = p2, width = 10, height = 6, dpi=300)
