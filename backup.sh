@@ -7,6 +7,6 @@ rsync -avh --progress --partial --delete \
   --exclude='.RData' \
   --exclude='.DS_Store' \
   --exclude='Thumbs.db' \
-  ~/work/qPCR/ \
+  ~/Documents/work/qPCR/ \
   /Volumes/nipper/qPCR/
 
