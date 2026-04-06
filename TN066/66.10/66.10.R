@@ -9,7 +9,9 @@ data_eluate <- data %>%
   separate(Sample.Name, into = c("condition", "infection", "ab"), sep = "_") %>%
   pivot_wider(names_from = ab, values_from = mean_ct) %>%
   mutate(enrich = FAB - V5) %>%
-  mutate(enrich_foldchange = 2^-enrich)
+  mutate(enrich_foldchange = 2^-enrich) 
+
+write.csv(data_eluate, "TN066/66.10/TN066_10_enrichment_foldchange.csv")
 
 p <- ggplot(data_eluate, aes(x = Target.Name, y = enrich_foldchange, color = infection)) +
   geom_point(size = 2, position = position_dodge(width = 0.5)) +
