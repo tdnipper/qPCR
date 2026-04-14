@@ -7,10 +7,10 @@ data <- read.csv("TN069/69.14/TN069.14_filtered.csv") %>%
 
 data_dct <- data %>%
   pivot_wider(names_from = eluate, values_from = mean_ct) %>%
-  mutate(across(.cols = c("flowthrough", "enrich"), .fns = ~ . - input + log2(0.1^-1), .names = "dCT_{col}")) %>%
-  mutate(across(.cols = starts_with("dCT_"), .fns = ~ 2^(-.x), .names = "foldchange_{col}")) %>%
+  mutate(across(.cols = c("flowthrough", "enrich"), .fn = ~ .x - input + log2(0.1^-1), .names = "dCT_{col}")) %>%
+  mutate(across(.cols = starts_with("dCT_"), .fn = ~ 2^(-.x), .names = "foldchange_{col}")) %>%
   rename_with(.cols = starts_with("foldchange_"), .fn = ~ str_replace(.x, "foldchange_dCT_", "foldchange_")) %>%
-  mutate(across(.cols = starts_with("foldchange_"), .fns = ~ .x * 100, .names = "percent_input_{col}")) %>%
+  mutate(across(.cols = starts_with("foldchange_"), .fn = ~ .x * 100, .names = "percent_input_{col}")) %>%
   rename_with(.cols = starts_with("percent_input_foldchange_"), .fn = ~ str_replace(.x, "percent_input_foldchange_", "percent_input_"))
 
 plot_data <- data_dct %>%
