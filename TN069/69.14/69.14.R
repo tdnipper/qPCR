@@ -2,6 +2,7 @@ library(tidyverse)
 
 data <- read.csv("TN069/69.14/TN069.14_filtered.csv") %>%
   group_by(Sample.Name, Target.Name, Task) %>%
+  filter(abs(CT - median(CT)) <= 1) %>%
   summarize(mean_ct = mean(CT), .groups = "drop") %>%
   separate(Sample.Name, into = c("Sample", "eluate"), sep = "_")
 
