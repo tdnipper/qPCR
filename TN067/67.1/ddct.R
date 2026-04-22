@@ -87,6 +87,7 @@ ymax <- max(fold_change_data$log2fc, na.rm = TRUE)
 xorder <- c("T0", "T8", "T24", "T48")
 p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = log2fc)) +
     geom_jitter(position = position_jitterdodge()) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
     coord_cartesian(ylim = c(ymin, ymax)) +
     labs(x = "Hours post-infection",
          y = "Log2 Fold Change / Mock",
