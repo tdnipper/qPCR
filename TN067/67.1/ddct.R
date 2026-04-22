@@ -69,11 +69,9 @@ normality <- fold_change_data %>%
     W = shapiro.test(log2fc)$statistic,
     p_value = shapiro.test(log2fc)$p.value
   )
-print(normality)
 
 # --- HOMOGENEITY OF VARIANCE (Levene’s test) ---
 levene <- leveneTest(log2fc ~ Sample_Name, data = fold_change_data)
-print(levene)
 
 # Compute and adjust p-values
 pvals <- fold_change_data %>%
@@ -86,14 +84,12 @@ gh <- games_howell_test(fold_change_data, log2fc ~ Sample_Name) %>%
 # Plot
 ymin <- min(fold_change_data$log2fc, na.rm = TRUE)
 ymax <- max(fold_change_data$log2fc, na.rm = TRUE)
-print(ymax)
 xorder <- c("T0", "T8", "T24", "T48")
 p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = log2fc)) +
     geom_jitter(position = position_jitterdodge()) +
     coord_cartesian(ylim = c(ymin, ymax)) +
-    labs(title = "DUSP11 mRNA during multicycle infection",
-         x = "Hours post-infection",
-         y = "Log2 Fold Change / Mock (18S)",
+    labs(x = "Hours post-infection",
+         y = "Log2 Fold Change / Mock",
          caption = "067.1, Games-Howell post-hoc test") +
     theme_classic() +
     theme(axis.line = element_blank(),
@@ -102,7 +98,7 @@ p <- ggplot(fold_change_data, aes(x = factor(Sample_Name, levels = xorder), y = 
           axis.text = element_text(size = 14),
           axis.title = element_text(size = 16)
   ) +
-  stat_pvalue_manual(gh, label = "p.adj.signif", hide.ns = FALSE, x = "group2") + 
+  stat_pvalue_manual(gh, label = "p.adj.signif", hide.ns = FALSE, x = "group2", y.position = ymax * 1.1) + 
   stat_welch_anova_test()
 
 # Save the plot
