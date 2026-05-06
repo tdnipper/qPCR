@@ -58,7 +58,8 @@ ggplot(plot_data, aes(x = sample_name, y = fold_change)) +
   geom_point(stat = "identity", position = position_dodge(width=0.5)) +
   labs(title = "DUSP11 mRNA during IFN, polyI:C, and infection", y = "Fold Change") +
   theme_classic() +
-  ylim(0, 1.2) +
-  theme(legend.title = element_blank())	+
-  stat_pvalue_manual(posthoc, label = "p.adj.signif", tip.length = 0.01, hide.ns = FALSE, x = "group2", y.position = 1.2) +
+  ylim(0, 1.3) +
+  theme(legend.title = element_blank(),
+  		axis.title.x = element_blank()) +
+		stat_pvalue_manual(posthoc, label = "p.adj.signif", hide.ns = FALSE, x = "group2", y.position = 1.3) +
 ggsave("TN072/72.1/72.1_plot.png", width = 8, height = 6, dpi = 300)
