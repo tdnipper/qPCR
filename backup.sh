@@ -1,4 +1,4 @@
-rsync -avh --progress --partial --delete \
+rsync -avh --progress --partial \
   --exclude='.git/' \
   --exclude='.venv/' \
   --exclude='__pycache__/' \
