@@ -18,7 +18,7 @@ data_dct <- data |>
   group_by(`Sample Name`, Task) |>
   mutate(
 	across(
-		.cols = targets, 
+		.cols = all_of(targets), 
 		.fn = ~ . - TBP1, 
 		.names = "dCT_{col}")) |>
   ungroup()
