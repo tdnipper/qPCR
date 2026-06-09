@@ -62,6 +62,11 @@ data_foldchange <- data_ddct |>
 	.fn = ~ str_replace(.x, "foldchange_ddCT_", "foldchange_")
   )
 
+# Write ddCT and fold change data to csv
+data_write <- data_ddct |>
+  left_join(data_foldchange, by = c("Sample Name", "Task"))
+write_csv(data_write, "TN071/71.1/TN071.1_ddCT_foldchange.csv")
+
 # Plot fold change for DUSP11 and PB2
 
 p_DUSP11 <- ggplot(data_foldchange, aes(x = `Sample Name`, y = foldchange_DUSP11)) +
