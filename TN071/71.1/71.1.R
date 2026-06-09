@@ -123,7 +123,7 @@ p_amp <- ggplot(
   labs(
 	title = "TBP Amplification",
 	x = "",
-	y = "CT") +
+	y = "mean Delta Rn") +
   theme_classic()
 
 ggsave("TN071/71.1/TN071.1_TBP1_amplification_plot.png", plot = p_amp, width = 8, height = 6, dpi = 300)
