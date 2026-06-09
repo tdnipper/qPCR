@@ -158,3 +158,23 @@ p_PB2_ratio <- ggplot(
 	scale_y_continuous(breaks = seq(0, 1, by = 0.2)) +
 	theme_classic()
 ggsave("TN045/45.8/TN045.8_PB2_WT_ratio_plot.png", plot = p_PB2_ratio, width = 8, height = 6, dpi = 300)
+
+# Check TBP levels across all infections
+data_amp <- read_csv("TN045/45.8/TN045.8_amp.csv") |>
+	filter(`Target Name` == "TBP1") |>
+  group_by(`Sample Name`, Task, Cycle) |>
+  summarize(
+		meanRn = mean(`Delta Rn`),
+		sdRN = sd(`Delta Rn`),
+		.groups = "drop")
+
+p_amp <- ggplot(data_amp, aes(x = Cycle, y = meanRn, color = `Sample Name`, group = interaction(`Sample Name`, Task))) +
+	geom_line() +
+  geom_ribbon(aes(ymin = meanRn - sdRN, ymax = meanRn + sdRN, fill = `Sample Name`), alpha = 0.2) +
+	labs(
+		title = "TBP Amplification",
+		x = "Cycle",
+		y = "mean Delta Rn") +
+	theme_classic()
+
+ggsave("TN045/45.8/TN045.8_TBP1_amplification_plot.png", plot = p_amp, width = 8, height = 6, dpi = 300)
