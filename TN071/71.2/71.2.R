@@ -19,6 +19,6 @@ p_amp <- ggplot(data, aes(x = Cycle, y = meanRn, color = `Sample Name`, group = 
 		x = "",
 		y = "Delta Rn",) +
 	theme_classic() +
-	facet_wrap(~ `Target Name`, scales = "free_y")
+	facet_wrap(~ `Target Name`)
 
 ggsave("TN071/71.2/TN071.2_amplification_plot.png", plot = p_amp, width = 8, height = 6, dpi = 300)
