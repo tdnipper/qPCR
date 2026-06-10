@@ -7,4 +7,4 @@ This repository contains files for analyzing qPCR experiments. Data is organized
 ## Dependencies
 
 These analysis files require openpyxl pandas numpy matplotlib seaborn.
-Conda environments can be installed using the included environment.yml file.
+Create a .venv from requirements.txt.
