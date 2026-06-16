@@ -58,6 +58,13 @@ means <- plot_data |>
             sd = sd(fold_change, na.rm = TRUE),
             .groups = "drop")
 
+means_no_outliers <- plot_data |>
+  filter(Task != 4, Task != 6) |>
+  group_by(`Sample Name`, Target) |>
+  summarize(mean = mean(fold_change, na.rm = TRUE),
+            sd = sd(fold_change, na.rm = TRUE),
+            .groups = "drop")
+
 # plot fold change
 p_dusp11 <- plot_data |>
   filter(Target == "DUSP11") |>
@@ -77,12 +84,16 @@ ggsave("TN065/65.7/dusp11_plot.png", plot = p_dusp11, width = 10, height = 6, dp
 # remove outliers (Task 4 and Task 6) from DUSP11 plot
 p_dusp11_no_outliers <- plot_data |>
   filter(Task != 4, Task != 6, Target == "DUSP11") |>
-  ggplot(aes(x = `Sample Name`, y = fold_change, color = Task)) +
+  ggplot(aes(x = `Sample Name`, y = fold_change, color = `Sample Name`)) +
+  geom_col(data = means_no_outliers |> filter(Target == "DUSP11"), aes(x = `Sample Name`, y = mean, fill = `Sample Name`), alpha = 0.5, inherit.aes = FALSE) +
+  geom_errorbar(data = means_no_outliers |> filter(Target == "DUSP11"), aes(x = `Sample Name`, ymin = mean - sd, ymax = mean + sd, color = `Sample Name`), width = 0.2, inherit.aes = FALSE) +
     geom_point(size = 3, alpha = 0.7) +
     labs(title = "DUSP11 During Infection",
-        subtitle = "Outliers (4 and Task 6) Removed",
+        subtitle = "Outliers (4 and 6) Removed",
         x = "",
-        y = "Fold Change (2^-ddCT)"
+        y = "Fold Change (2^-ddCT)",
+        color = NULL,
+        fill = NULL
         ) +
     theme_classic()
 ggsave("TN065/65.7/dusp11_no_outliers_plot.png", plot = p_dusp11_no_outliers, width = 10, height = 6, dpi = 300)
