@@ -75,7 +75,7 @@ p_dusp11 <- ggplot(means %>% filter(Target == "DUSP11"), aes(x = `Sample Name`, 
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
   labs(title = "DUSP11 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP, 65.8") +
   ylim(0, 1.25) +
-  theme_classic()
+  theme_minimal()
 ggsave("TN065/65.8/fold_change_DUSP11_TBP.png", p_dusp11, width = 6, height = 4, dpi = 300)
 
 p_PB2 <- ggplot(means %>% filter(Target == "WSN_PB2"), aes(x = `Sample Name`, y = mean)) +
@@ -84,7 +84,7 @@ p_PB2 <- ggplot(means %>% filter(Target == "WSN_PB2"), aes(x = `Sample Name`, y 
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
   labs(title = "WSN_PB2 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
   scale_y_log10() +
-  theme_classic()
+  theme_minimal()
 ggsave("TN065/65.8/fold_change_WSN_PB2_TBP_PUM1.png", p_PB2, width = 6, height = 4, dpi = 300)
 
 
@@ -102,7 +102,7 @@ plot_amp <- ggplot(amp_data, aes(x = Cycle, y = meanRn, color = `Sample Name`, g
   geom_vline(xintercept=4, linetype="dashed", color = "red") +
   geom_rect(aes(xmin=30.1, xmax=Inf, ymin=-Inf, ymax=Inf), fill="grey", color=NA, alpha=0.01) +
   labs(title = "Amplification Curves", x = "Cycle", y = "Mean Delta Rn", caption = "65.8") +
-  theme_classic() +
+  theme_minimal() +
   facet_wrap(~ `Target Name`)
   
 ggsave("TN065/65.8/amplification_curves.png", plot_amp, width = 6, height = 4, dpi = 300)
