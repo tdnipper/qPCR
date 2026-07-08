@@ -16,14 +16,14 @@ data <- data |>
 
 # create dct columns
 cols_to_subtract <- c("DUSP11", "WSN_PB2")
-data <- data |>
-  mutate(across(all_of(cols_to_subtract), 
-                list(dct = ~ . - geo_mean),
-                .names = "dct {.col}"))
 # data <- data |>
 #   mutate(across(all_of(cols_to_subtract), 
-#                 list(dct = ~ . - PUM1),
+#                 list(dct = ~ . - geo_mean),
 #                 .names = "dct {.col}"))
+data <- data |>
+  mutate(across(all_of(cols_to_subtract), 
+                list(dct = ~ . - TBP),
+                .names = "dct {.col}"))
 
 # pivot longer to get dct columns in one column
 data_dct <- data |>
@@ -70,15 +70,15 @@ means <- plot_data |>
 
 # plot fold change with error bars
 p_dusp11 <- ggplot(means %>% filter(Target == "DUSP11"), aes(x = `Sample Name`, y = mean)) +
-  geom_col(position = position_dodge(width = 0.9), width = 0.7) +
+  geom_col(aes(color = `Sample Name`, fill = `Sample Name`), position = position_dodge(width = 0.9), width = 0.7) +
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
-  labs(title = "DUSP11 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
+  labs(title = "DUSP11 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP, 65.8") +
   ylim(0, 1.25) +
   theme_minimal()
-ggsave("TN065/65.8/fold_change_DUSP11_TBP_PUM1.png", p_dusp11, width = 6, height = 4, dpi = 300)
+ggsave("TN065/65.8/fold_change_DUSP11_TBP.png", p_dusp11, width = 6, height = 4, dpi = 300)
 
 p_PB2 <- ggplot(means %>% filter(Target == "WSN_PB2"), aes(x = `Sample Name`, y = mean)) +
-  geom_col(position = position_dodge(width = 0.9), width = 0.7) +
+  geom_col(aes(color = `Sample Name`, fill = `Sample Name`), position = position_dodge(width = 0.9), width = 0.7) +
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
   labs(title = "WSN_PB2 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
   scale_y_log10() +
@@ -89,6 +89,9 @@ ggsave("TN065/65.8/fold_change_WSN_PB2_TBP_PUM1.png", p_PB2, width = 6, height =
 amp_data <- read_csv("TN065/65.8/TN065.8_amp.csv") |>
   group_by(`Sample Name`, `Target Name`, Cycle, Task) |>
   summarize(meanRn = mean(`Delta Rn`), sdRN = sd(`Delta Rn`), .groups = "drop")
+
+amp_data <- amp_data |>
+  mutate(`Sample Name` = factor(`Sample Name`, levels = c("T0", "T8", "T24", "T48")))
   
 plot_amp <- ggplot(amp_data, aes(x = Cycle, y = meanRn, color = `Sample Name`, group = interaction(`Sample Name`, Task))) +
   geom_line() +
