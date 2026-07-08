@@ -72,10 +72,18 @@ means <- plot_data |>
 p_dusp11 <- ggplot(means %>% filter(Target == "DUSP11"), aes(x = `Sample Name`, y = mean)) +
   geom_col(position = position_dodge(width = 0.9), width = 0.7) +
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
-  labs(title = "Fold Change of DUSP11", x = "Sample Name", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
+  labs(title = "DUSP11 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
   ylim(0, 1.25) +
   theme_minimal()
 ggsave("TN065/65.8/fold_change_DUSP11_TBP_PUM1.png", p_dusp11, width = 6, height = 4, dpi = 300)
+
+p_PB2 <- ggplot(means %>% filter(Target == "WSN_PB2"), aes(x = `Sample Name`, y = mean)) +
+  geom_col(position = position_dodge(width = 0.9), width = 0.7) +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
+  labs(title = "WSN_PB2 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP+PUM1, 65.8") +
+  scale_y_log10() +
+  theme_minimal()
+ggsave("TN065/65.8/fold_change_WSN_PB2_TBP_PUM1.png", p_PB2, width = 6, height = 4, dpi = 300)
 
 
 amp_data <- read_csv("TN065/65.8/TN065.8_amp.csv") |>
