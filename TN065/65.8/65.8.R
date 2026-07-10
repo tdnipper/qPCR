@@ -16,14 +16,14 @@ data <- data |>
 
 # create dct columns
 cols_to_subtract <- c("DUSP11", "WSN_PB2")
-# data <- data |>
-#   mutate(across(all_of(cols_to_subtract), 
-#                 list(dct = ~ . - geo_mean),
-#                 .names = "dct {.col}"))
 data <- data |>
   mutate(across(all_of(cols_to_subtract), 
-                list(dct = ~ . - TBP),
+                list(dct = ~ . - geo_mean),
                 .names = "dct {.col}"))
+# data <- data |>
+#   mutate(across(all_of(cols_to_subtract), 
+#                 list(dct = ~ . - TBP),
+#                 .names = "dct {.col}"))
 
 # pivot longer to get dct columns in one column
 data_dct <- data |>
@@ -73,10 +73,18 @@ p_dusp11 <- ggplot(means %>% filter(Target == "DUSP11"), aes(x = `Sample Name`, 
   geom_col(aes(color = `Sample Name`, fill = `Sample Name`), width = 0.7, alpha = 0.4) +
   geom_jitter(data = plot_data %>% filter(Target == "DUSP11"), aes(x = `Sample Name`, y = fold_change, color = `Sample Name`), position = position_dodge(width = 0.9), size = 2) +
   geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd), position = position_dodge(width = 0.9), width = 0.2) +
-  labs(title = "DUSP11 mRNA during infection", x = "Hours post-infection", y = "Fold Change", caption = "Control: TBP, 65.8") +
-  ylim(0, 1.25) +
+  labs(
+    title = "DUSP11 mRNA during infection",
+    x = "Hours post-infection",
+    y = "Fold Change",
+    caption = "Control: TBP+PUM1, 65.8"
+  ) +
+  scale_y_continuous(
+    limits = c(0, 1.25),
+    breaks = seq(0, 1.00, by = 0.25),
+  ) +
   theme_minimal()
-ggsave("TN065/65.8/fold_change_DUSP11_TBP.png", p_dusp11, width = 6, height = 4, dpi = 300)
+ggsave("TN065/65.8/fold_change_DUSP11_TBP_PUM1.png", p_dusp11, width = 6, height = 4, dpi = 300)
 
 p_PB2 <- ggplot(means %>% filter(Target == "WSN_PB2"), aes(x = `Sample Name`, y = mean)) +
   geom_col(aes(color = `Sample Name`, fill = `Sample Name`), width = 0.7, alpha = 0.4) +
@@ -97,10 +105,10 @@ amp_data <- amp_data |>
   
 plot_amp <- ggplot(amp_data, aes(x = Cycle, y = meanRn, color = `Sample Name`, group = interaction(`Sample Name`, Task))) +
   geom_line() +
-  geom_ribbon(aes(ymin = meanRn - sdRN, ymax = meanRn + sdRN), alpha = 0.2) +
+  geom_ribbon(aes(ymin = meanRn - sdRN, ymax = meanRn + sdRN, color = `Sample Name`), alpha = 0.2) +
   geom_vline(xintercept=30, linetype="dashed", color = "red") +
   geom_vline(xintercept=4, linetype="dashed", color = "red") +
-  geom_rect(aes(xmin=30.1, xmax=Inf, ymin=-Inf, ymax=Inf), fill="grey", color=NA, alpha=0.01) +
+  geom_rect(xmin=30.1, xmax=Inf, ymin=-Inf, ymax=Inf, fill="grey", color=NA, alpha=0.01) +
   labs(title = "Amplification Curves", x = "Cycle", y = "Mean Delta Rn", caption = "65.8") +
   theme_minimal() +
   facet_wrap(~ `Target Name`)
