@@ -55,12 +55,87 @@ write_csv(
   ,"TN045/45.9/foldchange_results.csv"
 )
 
-# Statistical testing: one-way ANOVA + Dunnett vs mock
-library(rstatix)   # dunnett_test(), levene_test()
-set.seed(123)  # for reproducibility
+# Statistical testing (test on ddCT; identical to dCT, consistent w/ fold-change framing)
+library(rstatix)   # dunnett_test(), levene_test(), t_test()
+library(ggpubr)    # stat_pvalue_manual()
 
-# test on ddct
 ddct_stats <- data_ddct |>
   filter(`Target Name` != "RNA18S") |>
-  mutate(timepoint = factor(`Sample Name`, levels = c("mock", "WT", "PA-FS")))
+  mutate(condition = factor(`Sample Name`, levels = c("mock", "WT", "PA-FS")))
 
+## DUSP11 (host gene): one-way ANOVA + Dunnett vs mock
+dusp11 <- filter(ddct_stats, `Target Name` == "DUSP11")
+aov_dusp11 <- aov(ddCT ~ condition, data = dusp11)
+print(summary(aov_dusp11))
+print(shapiro.test(residuals(aov_dusp11)))     # normality of residuals
+print(levene_test(dusp11, ddCT ~ condition))   # equal variances
+
+set.seed(123)  # Dunnett's multivariate-t adjustment is Monte-Carlo -> reproducible
+dunnett_dusp11 <- dunnett_test(dusp11, ddCT ~ condition, ref.group = "mock")
+print(dunnett_dusp11)
+
+## WSN_PB2 (viral gene): WT vs PA-FS only; mock is uninfected background. Welch t-test.
+pb2 <- ddct_stats |>
+  filter(`Target Name` == "WSN_PB2", condition %in% c("WT", "PA-FS")) |>
+  mutate(condition = droplevels(condition))
+ttest_pb2 <- t_test(pb2, ddCT ~ condition, var.equal = FALSE) |>  # Welch
+  add_significance("p")
+print(ttest_pb2)
+
+# --- Plot data (per-replicate + means, both targets) ---
+plot_data <- data_foldchange |>
+  filter(`Target Name` != "RNA18S") |>
+  mutate(condition = factor(`Sample Name`, levels = c("mock", "WT", "PA-FS")))
+
+plot_means <- plot_data |>
+  group_by(condition, `Target Name`) |>
+  summarize(mean_fc = mean(fold_change, na.rm = TRUE),
+            sd = sd(fold_change, na.rm = TRUE), .groups = "drop")
+
+# --- DUSP11 plot: linear axis, Dunnett per-bar stars ---
+dusp11_means <- filter(plot_means, `Target Name` == "DUSP11")
+dusp11_pts   <- filter(plot_data,  `Target Name` == "DUSP11")
+
+stars_dusp11 <- dunnett_dusp11 |>
+  mutate(condition = factor(group2, levels = c("mock", "WT", "PA-FS"))) |>
+  left_join(dusp11_means, by = "condition") |>
+  mutate(y.position = mean_fc + sd + 0.05)
+
+ggplot(dusp11_means, aes(condition, mean_fc)) +
+  geom_col(aes(fill = condition), alpha = 0.5) +
+  geom_jitter(data = dusp11_pts,
+              aes(condition, fold_change, color = condition), width = 0.1) +
+  geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), width = 0.2) +
+  stat_pvalue_manual(stars_dusp11, x = "group2", label = "p.adj.signif") +
+  labs(title = "DUSP11", x = "Condition", y = "Fold change (2^-ddCT)") +
+  theme_minimal() +
+  theme(legend.position = "none")
+ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300)
+
+# --- WSN_PB2 plot: log10 axis (viral gene spans ~1e7), WT-vs-PA-FS bracket ---
+# SD error bars omitted: symmetric linear SD breaks on a log axis; jitter shows spread.
+# mock dropped: uninfected background, not informative for the viral gene.
+pb2_means <- plot_means |>
+  filter(`Target Name` == "WSN_PB2", condition != "mock") |>
+  mutate(condition = droplevels(condition))
+pb2_pts <- plot_data |>
+  filter(`Target Name` == "WSN_PB2", condition != "mock") |>
+  mutate(condition = droplevels(condition))
+
+# y.position is in original data units even under scale_y_log10() -> place above PA-FS
+stars_pb2 <- ttest_pb2 |>
+  mutate(y.position = max(pb2_pts$fold_change[pb2_pts$condition == "PA-FS"],
+                          na.rm = TRUE) * 3)
+
+ggplot(pb2_means, aes(condition, mean_fc)) +
+  geom_col(aes(fill = condition), alpha = 0.5) +
+  geom_jitter(data = pb2_pts,
+              aes(condition, fold_change, color = condition), width = 0.1) +
+  stat_pvalue_manual(stars_pb2, x = "group2", label = "p.signif") +  # star over PA-FS
+  scale_y_log10() +
+  labs(title = "PB2", x = "",
+       y = "Fold change (2^-ddCT), log10",
+       caption = "Fold change relative to mock; test = WT vs PA-FS, Welch t") +
+  theme_minimal() +
+  theme(legend.position = "none")
+ggsave("TN045/45.9/foldchange_WSN_PB2.png", width = 6, height = 4, dpi = 300)
