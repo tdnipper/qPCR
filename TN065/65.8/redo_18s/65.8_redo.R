@@ -94,8 +94,8 @@ stat_test <- dunnett |>
 
 # plot fold change
 ggplot(plot_data_means, aes(x = `Sample Name`, y = mean_fold_change)) +
-  geom_col(aes(fill = `Sample Name`), alpha = 0.5) +
-  geom_jitter(data = plot_data, aes(x = `Sample Name`, y = fold_change, color = `Sample Name`), width = 0.2) +
+  geom_col(fill = "#2A3752", alpha = 0.6) +
+  geom_jitter(data = plot_data, aes(x = `Sample Name`, y = fold_change), color = "#2A3752", width = 0.2) +
   geom_errorbar(aes(ymin = mean_fold_change - sd,
                 ymax = mean_fold_change + sd), width = 0.2) +
   stat_pvalue_manual(stat_test, x = "group2", label = "p.adj.signif") +
