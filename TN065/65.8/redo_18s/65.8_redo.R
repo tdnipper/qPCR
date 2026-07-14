@@ -44,6 +44,26 @@ write_csv(
   ,"TN065/65.8/redo_18s/foldchange_results.csv"
 )
 
+# --- Statistical testing: one-way ANOVA + Dunnett vs T0 ---
+library(rstatix)   # dunnett_test(), levene_test()
+
+# Test on dCT (log2 scale), not fold change, which is log-normal / heteroscedastic.
+# T0 first in levels = Dunnett reference/control.
+dct_stats <- data_dct |>
+  filter(Target == "DUSP11") |>
+  mutate(timepoint = factor(`Sample Name`, levels = c("T0", "T8", "T24", "T48")))
+
+aov_dusp11 <- aov(dct_value ~ timepoint, data = dct_stats)
+print(summary(aov_dusp11))
+
+# Assumption checks (n=6/group -> ANOVA fairly robust)
+print(shapiro.test(residuals(aov_dusp11)))            # normality of residuals
+print(levene_test(dct_stats, dct_value ~ timepoint))  # equal variances
+
+# Dunnett: each timepoint vs T0 (single-step FWER correction)
+dunnett <- dunnett_test(dct_stats, dct_value ~ timepoint, ref.group = "T0")
+print(dunnett)
+
 # data to plot foldchange
 plot_data <- data_foldchange |>
   select(`Sample Name`, Task, Target, fold_change)
@@ -60,14 +80,23 @@ plot_data_means <- plot_data |>
     sd = sd(fold_change, na.rm = TRUE),
     .groups = "drop")
 
+# place the Dunnett stars above each error bar (stars come from dunnett_test's p.adj.signif)
+library(ggpubr)    # stat_pvalue_manual()
+
+stat_test <- dunnett |>
+  mutate(`Sample Name` = factor(group2, levels = c("T0", "T8", "T24", "T48"))) |>
+  left_join(plot_data_means, by = "Sample Name") |>
+  mutate(y.position = mean_fold_change + sd + 0.05)
+
 # plot fold change
 ggplot(plot_data_means, aes(x = `Sample Name`, y = mean_fold_change)) +
   geom_col(aes(fill = `Sample Name`), alpha = 0.5) +
-  geom_jitter(data = plot_data, aes(x = `Sample Name`, y = fold_change, color = `Sample Name`)) +
-  geom_errorbar(aes(ymin = mean_fold_change - sd, 
+  geom_jitter(data = plot_data, aes(x = `Sample Name`, y = fold_change, color = `Sample Name`), width = 0.2) +
+  geom_errorbar(aes(ymin = mean_fold_change - sd,
                 ymax = mean_fold_change + sd), width = 0.2) +
+  stat_pvalue_manual(stat_test, x = "group2", label = "p.adj.signif") +
   labs(title = "DUSP11 during infection", x = "Hours post-infection", y = "Fold change (2^-ddCT)") +
-  scale_y_continuous(limits = c(0, 1.25), breaks = seq(0, 1.25, by = 0.25)) +
+  scale_y_continuous(limits = c(0, 1.4), breaks = seq(0, 1.25, by = 0.25)) +
   theme_minimal() +
   theme(legend.position = "none")
 ggsave("TN065/65.8/redo_18s/foldchange_plot.png", width = 6, height = 4, dpi = 300)
