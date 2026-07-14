@@ -101,12 +101,21 @@ top_dusp11 <- max(dusp11_means$mean_fc + dusp11_means$sd, na.rm = TRUE)
 stars_dusp11 <- tukey_dusp11 |>
   mutate(y.position = top_dusp11 * c(1.1, 1.25, 1.4))
 
+# Colors for plotting — one palette per plot, edit independently
+dusp11_colors <- c(
+  mock    = "#2A3752",  # navy — echoes the slide header
+  WT      = "#C8663E",  # terracotta
+  "PA-FS" = "#D9A441"   # amber
+)
+
 ggplot(dusp11_means, aes(condition, mean_fc)) +
   geom_col(aes(fill = condition), alpha = 0.5) +
   geom_jitter(data = dusp11_pts,
               aes(condition, fold_change, color = condition), width = 0.1) +
   geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), width = 0.2) +
   stat_pvalue_manual(stars_dusp11, label = "p.adj.signif", tip.length = 0.01) +
+  scale_fill_manual(values = dusp11_colors) +
+  scale_color_manual(values = dusp11_colors) +
   labs(title = "DUSP11", x = "Condition", y = "Fold change (2^-ddCT)") +
   theme_minimal() +
   theme(legend.position = "none")
@@ -127,11 +136,19 @@ stars_pb2 <- ttest_pb2 |>
   mutate(y.position = max(pb2_pts$fold_change[pb2_pts$condition == "PA-FS"],
                           na.rm = TRUE) * 3)
 
+# PB2 palette (mock dropped) — edit independently of dusp11_colors
+pb2_colors <- c(
+  WT      = "#2A3752",  # terracotta
+  "PA-FS" = "#C8663E"   # amber
+)
+
 ggplot(pb2_means, aes(condition, mean_fc)) +
   geom_col(aes(fill = condition), alpha = 0.5) +
   geom_jitter(data = pb2_pts,
               aes(condition, fold_change, color = condition), width = 0.1) +
   stat_pvalue_manual(stars_pb2, x = "group2", label = "p.signif") +  # star over PA-FS
+  scale_fill_manual(values = pb2_colors) +
+  scale_color_manual(values = pb2_colors) +
   scale_y_log10() +
   labs(title = "PB2", x = "",
        y = "Fold change (2^-ddCT), log10",
