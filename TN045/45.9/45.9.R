@@ -63,16 +63,16 @@ ddct_stats <- data_ddct |>
   filter(`Target Name` != "RNA18S") |>
   mutate(condition = factor(`Sample Name`, levels = c("mock", "WT", "PA-FS")))
 
-## DUSP11 (host gene): one-way ANOVA + Dunnett vs mock
+## DUSP11 (host gene): one-way ANOVA + Tukey HSD (all pairwise, incl. WT vs PA-FS)
 dusp11 <- filter(ddct_stats, `Target Name` == "DUSP11")
 aov_dusp11 <- aov(ddCT ~ condition, data = dusp11)
 print(summary(aov_dusp11))
 print(shapiro.test(residuals(aov_dusp11)))     # normality of residuals
 print(levene_test(dusp11, ddCT ~ condition))   # equal variances
 
-set.seed(123)  # Dunnett's multivariate-t adjustment is Monte-Carlo -> reproducible
-dunnett_dusp11 <- dunnett_test(dusp11, ddCT ~ condition, ref.group = "mock")
-print(dunnett_dusp11)
+# Tukey HSD: mock-WT, mock-PA-FS, WT-PA-FS under one family-wise correction
+tukey_dusp11 <- tukey_hsd(aov_dusp11)
+print(tukey_dusp11)
 
 ## WSN_PB2 (viral gene): WT vs PA-FS only; mock is uninfected background. Welch t-test.
 pb2 <- ddct_stats |>
@@ -96,17 +96,17 @@ plot_means <- plot_data |>
 dusp11_means <- filter(plot_means, `Target Name` == "DUSP11")
 dusp11_pts   <- filter(plot_data,  `Target Name` == "DUSP11")
 
-stars_dusp11 <- dunnett_dusp11 |>
-  mutate(condition = factor(group2, levels = c("mock", "WT", "PA-FS"))) |>
-  left_join(dusp11_means, by = "condition") |>
-  mutate(y.position = mean_fc + sd + 0.05)
+# Pairwise brackets (group1 -> group2), staggered so they don't overlap
+top_dusp11 <- max(dusp11_means$mean_fc + dusp11_means$sd, na.rm = TRUE)
+stars_dusp11 <- tukey_dusp11 |>
+  mutate(y.position = top_dusp11 * c(1.1, 1.25, 1.4))
 
 ggplot(dusp11_means, aes(condition, mean_fc)) +
   geom_col(aes(fill = condition), alpha = 0.5) +
   geom_jitter(data = dusp11_pts,
               aes(condition, fold_change, color = condition), width = 0.1) +
   geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), width = 0.2) +
-  stat_pvalue_manual(stars_dusp11, x = "group2", label = "p.adj.signif") +
+  stat_pvalue_manual(stars_dusp11, label = "p.adj.signif", tip.length = 0.01) +
   labs(title = "DUSP11", x = "Condition", y = "Fold change (2^-ddCT)") +
   theme_minimal() +
   theme(legend.position = "none")
