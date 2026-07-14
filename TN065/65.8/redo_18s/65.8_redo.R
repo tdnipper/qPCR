@@ -47,21 +47,25 @@ write_csv(
 # --- Statistical testing: one-way ANOVA + Dunnett vs T0 ---
 library(rstatix)   # dunnett_test(), levene_test()
 
-# Test on dCT (log2 scale), not fold change, which is log-normal / heteroscedastic.
+# Test on ddCT (log2 scale), not fold change, which is log-normal / heteroscedastic.
+# ddCT = dCT - T0 mean; identical results to testing on dCT (a constant shift),
+# tested on ddCT for consistency with the fold-change framing.
 # T0 first in levels = Dunnett reference/control.
-dct_stats <- data_dct |>
+ddct_stats <- data_ddct |>
   filter(Target == "DUSP11") |>
   mutate(timepoint = factor(`Sample Name`, levels = c("T0", "T8", "T24", "T48")))
 
-aov_dusp11 <- aov(dct_value ~ timepoint, data = dct_stats)
+aov_dusp11 <- aov(ddct ~ timepoint, data = ddct_stats)
 print(summary(aov_dusp11))
 
 # Assumption checks (n=6/group -> ANOVA fairly robust)
-print(shapiro.test(residuals(aov_dusp11)))            # normality of residuals
-print(levene_test(dct_stats, dct_value ~ timepoint))  # equal variances
+print(shapiro.test(residuals(aov_dusp11)))        # normality of residuals
+print(levene_test(ddct_stats, ddct ~ timepoint))  # equal variances
 
 # Dunnett: each timepoint vs T0 (single-step FWER correction)
-dunnett <- dunnett_test(dct_stats, dct_value ~ timepoint, ref.group = "T0")
+# seed: Dunnett's multivariate-t p-value adjustment is Monte-Carlo -> reproducible
+set.seed(42)
+dunnett <- dunnett_test(ddct_stats, ddct ~ timepoint, ref.group = "T0")
 print(dunnett)
 
 # data to plot foldchange
