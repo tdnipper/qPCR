@@ -91,4 +91,4 @@ ggplot(data_plot, aes(x = factor(`Sample Name`, levels = c("mock", "infected")),
   theme_minimal() +
   theme(panel.grid = element_blank(), legend.position = "top") +
   scale_y_continuous(limits = c(0, 1.25), breaks = seq(0, 1.25, by = 0.25))
-ggsave("TN074/74.1/TN074.1.1_redo_foldchange_plot.png", width = 6, height = 4, dpi = 300)
+ggsave("TN074/74.1/TN074.1.1_redo_foldchange_plot.png", width = 3, height = 4, dpi = 300)
