@@ -99,8 +99,8 @@ ggplot(plot_data_means, aes(x = `Sample Name`, y = mean_fold_change)) +
   geom_errorbar(aes(ymin = mean_fold_change - sd,
                 ymax = mean_fold_change + sd), width = 0.2) +
   stat_pvalue_manual(stat_test, x = "group2", label = "p.adj.signif") +
-  labs(title = "DUSP11 during infection", x = "Hours post-infection", y = "Fold change (2^-ddCT)") +
+  labs(title = "DUSP11 during infection", x = "Hours post-infection", y = "Fold change (2^-ddCT)", caption = "65.8 redo") +
   scale_y_continuous(limits = c(0, 1.4), breaks = seq(0, 1.25, by = 0.25)) +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none", panel.grid = element_blank())
 ggsave("TN065/65.8/redo_18s/foldchange_plot.png", width = 6, height = 4, dpi = 300)

@@ -109,7 +109,8 @@ p_dusp11 <- ggplot(
     limits = c(0, 1.25),
     breaks = seq(0, 1.00, by = 0.25),
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(panel.grid = element_blank())
 ggsave(
   "TN065/65.8/fold_change_DUSP11_TBP_PUM1.png",
   p_dusp11,
@@ -154,7 +155,8 @@ p_pb2 <- ggplot(
     caption = "Control: TBP+PUM1, 65.8"
   ) +
   scale_y_log10() +
-  theme_minimal()
+  theme_minimal() +
+  theme(panel.grid = element_blank())
 
 ggsave(
   "TN065/65.8/fold_change_WSN_PB2_TBP_PUM1.png",
@@ -208,6 +210,7 @@ plot_amp <- ggplot(
     caption = "65.8"
   ) +
   theme_minimal() +
+  theme(panel.grid = element_blank()) +
   facet_wrap(~ `Target Name`)
 
 ggsave(
