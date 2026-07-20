@@ -118,7 +118,7 @@ ggplot(dusp11_means, aes(condition, mean_fc)) +
   scale_color_manual(values = dusp11_colors) +
   labs(title = "DUSP11", x = "Condition", y = "Fold change (2^-ddCT)") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none", panel.grid = element_blank())
 ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300)
 
 # --- WSN_PB2 plot: log10 axis (viral gene spans ~1e7), WT-vs-PA-FS bracket ---
@@ -154,5 +154,5 @@ ggplot(pb2_means, aes(condition, mean_fc)) +
        y = "Fold change (2^-ddCT), log10",
        caption = "Fold change relative to mock; test = WT vs PA-FS, Welch t") +
   theme_minimal() +
-  theme(legend.position = "none")
+  theme(legend.position = "none", panel.grid = element_blank())
 ggsave("TN045/45.9/foldchange_WSN_PB2.png", width = 6, height = 4, dpi = 300)
