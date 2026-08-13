@@ -63,7 +63,7 @@ ddct_stats <- data_ddct |>
   filter(`Target Name` != "RNA18S") |>
   mutate(condition = factor(`Sample Name`, levels = c("mock", "WT", "PA-FS")))
 
-## DUSP11 (host gene): one-way ANOVA + Tukey HSD (all pairwise, incl. WT vs PA-FS)
+# DUSP11: one-way ANOVA + Tukey HSD (all pairwise, incl. WT vs PA-FS)
 dusp11 <- filter(ddct_stats, `Target Name` == "DUSP11")
 aov_dusp11 <- aov(ddCT ~ condition, data = dusp11)
 print(summary(aov_dusp11))
@@ -74,7 +74,7 @@ print(levene_test(dusp11, ddCT ~ condition))   # equal variances
 tukey_dusp11 <- tukey_hsd(aov_dusp11)
 print(tukey_dusp11)
 
-## WSN_PB2 (viral gene): WT vs PA-FS only; mock is uninfected background. Welch t-test.
+# WSN_PB2: WT vs PA-FS only; mock is uninfected background. Welch t-test.
 pb2 <- ddct_stats |>
   filter(`Target Name` == "WSN_PB2", condition %in% c("WT", "PA-FS")) |>
   mutate(condition = droplevels(condition))
@@ -101,13 +101,6 @@ top_dusp11 <- max(dusp11_means$mean_fc + dusp11_means$sd, na.rm = TRUE)
 stars_dusp11 <- tukey_dusp11 |>
   mutate(y.position = top_dusp11 * c(1.1, 1.25, 1.4))
 
-# Colors for plotting — one palette per plot, edit independently
-dusp11_colors <- c(
-  mock    = "#2A3752",  # navy — echoes the slide header
-  WT      = "#C8663E",  # terracotta
-  "PA-FS" = "#D9A441"   # amber
-)
-
 ggplot(dusp11_means, aes(condition, mean_fc)) +
   geom_col(fill = '#2A3752', alpha = 0.5) +
   geom_jitter(data = dusp11_pts,
@@ -120,9 +113,7 @@ ggplot(dusp11_means, aes(condition, mean_fc)) +
   theme(legend.position = "none", panel.grid = element_blank(), panel.border = element_blank(), plot.background = element_blank())
 ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300, bg = "transparent")
 
-# --- WSN_PB2 plot: log10 axis (viral gene spans ~1e7), WT-vs-PA-FS bracket ---
-# SD error bars omitted: symmetric linear SD breaks on a log axis; jitter shows spread.
-# mock dropped: uninfected background, not informative for the viral gene.
+# WSN_PB2 plot
 pb2_means <- plot_means |>
   filter(`Target Name` == "WSN_PB2", condition != "mock") |>
   mutate(condition = droplevels(condition))
@@ -135,16 +126,10 @@ stars_pb2 <- ttest_pb2 |>
   mutate(y.position = max(pb2_pts$fold_change[pb2_pts$condition == "PA-FS"],
                           na.rm = TRUE) * 3)
 
-# PB2 palette (mock dropped) — edit independently of dusp11_colors
-pb2_colors <- c(
-  WT      = "#2A3752",  # terracotta
-  "PA-FS" = "#C8663E"   # amber
-)
-
 ggplot(pb2_means, aes(condition, mean_fc)) +
   geom_col(fill = '#2A3752', alpha = 0.5) +
   geom_jitter(data = pb2_pts,
-              aes(condition, fold_change, color = "#2A3752"), width = 0.1) +
+              aes(condition, fold_change), color = "#2A3752", width = 0.1) +
   stat_pvalue_manual(stars_pb2, x = "group2", label = "p.signif") +  # star over PA-FS
   scale_y_log10() +
   labs(title = "PB2", x = "",
