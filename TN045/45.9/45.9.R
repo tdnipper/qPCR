@@ -114,10 +114,11 @@ ggplot(dusp11_means, aes(condition, mean_fc)) +
               aes(condition, fold_change), color = "#2A3752", width = 0.1) +
   geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), color = "#2A3752", width = 0.2) +
   stat_pvalue_manual(stars_dusp11, label = "p.adj.signif", tip.length = 0.01) +
-  labs(title = "DUSP11", x = "", y = "Foldchange") +
+  labs(title = "", x = "", y = "Foldchange") +
+  scale_x_discrete(labels = c("mock" = "Mock", "WT" = "WT", "PA-FS" = "ΔPA-X")) +
   theme_minimal() +
-  theme(legend.position = "none", panel.grid = element_blank())
-ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300)
+  theme(legend.position = "none", panel.grid = element_blank(), panel.border = element_blank(), plot.background = element_blank())
+ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300, bg = "transparent")
 
 # --- WSN_PB2 plot: log10 axis (viral gene spans ~1e7), WT-vs-PA-FS bracket ---
 # SD error bars omitted: symmetric linear SD breaks on a log axis; jitter shows spread.
