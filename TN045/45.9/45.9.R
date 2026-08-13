@@ -109,14 +109,12 @@ dusp11_colors <- c(
 )
 
 ggplot(dusp11_means, aes(condition, mean_fc)) +
-  geom_col(aes(fill = condition), alpha = 0.5) +
+  geom_col(fill = '#2A3752', alpha = 0.5) +
   geom_jitter(data = dusp11_pts,
-              aes(condition, fold_change, color = condition), width = 0.1) +
-  geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), width = 0.2) +
+              aes(condition, fold_change), color = "#2A3752", width = 0.1) +
+  geom_errorbar(aes(ymin = mean_fc - sd, ymax = mean_fc + sd), color = "#2A3752", width = 0.2) +
   stat_pvalue_manual(stars_dusp11, label = "p.adj.signif", tip.length = 0.01) +
-  scale_fill_manual(values = dusp11_colors) +
-  scale_color_manual(values = dusp11_colors) +
-  labs(title = "DUSP11", x = "Condition", y = "Fold change (2^-ddCT)") +
+  labs(title = "DUSP11", x = "", y = "Foldchange") +
   theme_minimal() +
   theme(legend.position = "none", panel.grid = element_blank())
 ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300)
@@ -143,12 +141,10 @@ pb2_colors <- c(
 )
 
 ggplot(pb2_means, aes(condition, mean_fc)) +
-  geom_col(aes(fill = condition), alpha = 0.5) +
+  geom_col(fill = '#2A3752', alpha = 0.5) +
   geom_jitter(data = pb2_pts,
-              aes(condition, fold_change, color = condition), width = 0.1) +
+              aes(condition, fold_change, color = "#2A3752"), width = 0.1) +
   stat_pvalue_manual(stars_pb2, x = "group2", label = "p.signif") +  # star over PA-FS
-  scale_fill_manual(values = pb2_colors) +
-  scale_color_manual(values = pb2_colors) +
   scale_y_log10() +
   labs(title = "PB2", x = "",
        y = "Fold change (2^-ddCT), log10",
