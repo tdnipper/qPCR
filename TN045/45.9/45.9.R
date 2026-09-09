@@ -110,8 +110,8 @@ ggplot(dusp11_means, aes(condition, mean_fc)) +
   labs(title = "", x = "", y = "Foldchange") +
   scale_x_discrete(labels = c("mock" = "Mock", "WT" = "WT", "PA-FS" = "ΔPA-X")) +
   theme_minimal() +
-  theme(legend.position = "none", panel.grid = element_blank(), panel.border = element_blank(), plot.background = element_blank())
-ggsave("TN045/45.9/foldchange_DUSP11.png", width = 6, height = 4, dpi = 300, bg = "transparent")
+  theme(legend.position = "none", panel.grid = element_blank())
+ggsave("TN045/45.9/foldchange_DUSP11.png", width = 4, height = 4, dpi = 300, bg = "transparent")
 
 # WSN_PB2 plot
 pb2_means <- plot_means |>
@@ -120,7 +120,6 @@ pb2_means <- plot_means |>
 pb2_pts <- plot_data |>
   filter(`Target Name` == "WSN_PB2", condition != "mock") |>
   mutate(condition = droplevels(condition))
-
 # y.position is in original data units even under scale_y_log10() -> place above PA-FS
 stars_pb2 <- ttest_pb2 |>
   mutate(y.position = max(pb2_pts$fold_change[pb2_pts$condition == "PA-FS"],
