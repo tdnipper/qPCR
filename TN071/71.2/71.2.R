@@ -142,10 +142,12 @@ ggplot(data = plot_means, aes(x = `Sample Name`, y = meanfc)) +
   stat_pvalue_manual(dunnett_DUSP11, x = "group2", label = "p.adj.signif", y.position = 1.25) +
   labs(
     title = "ALI infection",
-    x = "Cell Status",
-    y = "Fold Change"
+    x = "",
+    y = "Foldchange"
   ) +
-  theme_classic() +
+  scale_x_discrete(labels = c("mock" = "Mock", "PE+" = "Infected", "PE-" = "Bystander")) +
+  theme_minimal() +
+  theme(panel.grid = element_blank()) +
   facet_wrap(~ Target, scales = "free_y") +
   # ggh4x allows for facetted scales
   facetted_pos_scales(
@@ -158,4 +160,4 @@ ggplot(data = plot_means, aes(x = `Sample Name`, y = meanfc)) +
     )
   )
 
-ggsave("TN071/71.2/TN071.2_foldchange_18S_plot.png", width = 8, height = 6, dpi = 300)
+ggsave("TN071/71.2/TN071.2_foldchange_18S_plot.png", width = 6, height = 4, dpi = 300)
