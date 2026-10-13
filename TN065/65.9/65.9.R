@@ -119,5 +119,7 @@ print(p)
 ggsave(
   filename = "TN065/65.9/65.9_foldchange.png",
   plot = p,
-  dpi = 300
+  dpi = 300,
+  height = 4,
+  width = 6
 )
