@@ -91,3 +91,12 @@ p_ratio <- ratio_5_3 |>
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         panel.grid = element_blank())
 ggsave("TN061/61.6/61.6_5_3_ratio_plot.png", p_ratio, dpi = 300)
+
+df_inputs <- df |>
+  filter(str_detect(Sample.Name, "input")) |>
+  pivot_wider(names_from = Sample.Name, values_from = CT) |>
+  mutate(delta_ct = `input_RnaseH` - `input_untreated`) |>
+  mutate(avg_delta_ct = mean(delta_ct, na.rm = TRUE), sd_delta_ct = sd(delta_ct, na.rm = TRUE), .by = Target.Name, Task) |>
+  select(Target.Name, avg_delta_ct, sd_delta_ct) |>
+  mutate(foldchange = 2^(-avg_delta_ct)) |>
+  distinct()
