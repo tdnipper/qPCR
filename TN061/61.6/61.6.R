@@ -16,16 +16,16 @@ df_minus <- df |>
 # Calculate percent recovery
 # Input is 10% frac so adjust by log2(0.1^-1) 
 df_plus <- df_plus |>
-  mutate(percent_recovery = `enriched_RnaseH` - `input_RnaseH` - log2(0.1^-1)) |>
-  mutate(percent_recovery = 2^(-percent_recovery)) |>
+  mutate(percent_recovery = `enriched_RnaseH` - `input_RnaseH` + log2(0.1^-1)) |>
+  mutate(percent_recovery = 2^(-percent_recovery)*100) |>
   group_by(Target.Name) |>
   mutate(avg_percent_recovery = mean(percent_recovery, na.rm = TRUE)) |>
   mutate(sd_percent_recovery = sd(percent_recovery, na.rm = TRUE)) |>
   select(Target.Name, avg_percent_recovery, sd_percent_recovery) |>
   distinct()
 df_minus <- df_minus |>
-  mutate(percent_recovery = `enriched_untreated` - `input_untreated` - log2(0.1^-1)) |>
-  mutate(percent_recovery = 2^(-percent_recovery)) |>
+  mutate(percent_recovery = `enriched_untreated` - `input_untreated` + log2(0.1^-1)) |>
+  mutate(percent_recovery = 2^(-percent_recovery)*100) |>
   group_by(Target.Name) |>
   mutate(avg_percent_recovery = mean(percent_recovery, na.rm = TRUE)) |>
   mutate(sd_percent_recovery = sd(percent_recovery, na.rm = TRUE)) |>
