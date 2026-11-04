@@ -77,6 +77,6 @@ p <- ggplot(df_plot, aes(x = Sample.Name, y = mean_fc, fill = form)) +
   facet_wrap(~ aa) +
   scale_fill_manual(values = c(pre = "#2A3752", total = "#C4694F")) +
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
-  labs(x = "", y = "Fold change") +
+  labs(x = "", y = "Fold change", title = "tRNA (pre and total) change during pol III inhibition") +
   theme_minimal()
 ggsave("TN077/77.1/TN077.1_foldchange.png", plot = p, width = 8, height = 4, dpi = 300)
